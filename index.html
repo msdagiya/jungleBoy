@@ -1,0 +1,546 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 10</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/phaser/3.18.1/phaser.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body style="width:720px;padding:20px;margin:auto auto;">
+<div style="width:360px; padding:40px; float:left; box-sizing:border-box;display:block;">
+<h1>Jungle Boy Game</h1>
+<p>Use right and left keys to move the tarzen around the screen. Collect bananas and Jumps, avoid bird and Jump on birds to get extra jump</p>
+</div>
+
+<script type="text/javascript">
+var tarzen;
+var background;
+var cursors;
+var fire;
+var bananas;
+var score = 0;
+var scoreText;
+var pads;
+var bonus;
+var path = new Array(200);
+var forest;
+var coin;
+var jump;
+var birds;
+
+class Menu extends Phaser.Scene{
+    constructor(){
+        super({ key:'Menu', active:true});
+    }
+    preload(){
+    this.load.path = 'assets/';
+
+
+
+    // Forest Audio Asset
+    this.load.audio('Forest', '272417__thearxx08__forest-ambience.mp3');
+
+
+    // Coin Audio Asset
+    this.load.audio('Coin', '341695__projectsu012__coins-1.wav');
+
+
+    // Jump Audio Asset
+    this.load.audio('Jump', '350901__cabled-mess__jump-c-06.wav');
+
+
+    // Background assets
+    this.load.image('Background', 
+    'craftpix-809414-cartoon-vertical-game-backgrounds/png/1.png');
+
+    // Title assets
+    this.load.image('Logo', 
+    'coollogo_com-3156672.png');
+
+    //Button assets
+    this.load.image('Button',
+    'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/normal/play.png');
+    this.load.image('Button_hover',
+    'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/hover/play.png');
+    this.load.image('Button_down',
+    'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/click/play.png');
+
+
+    //Bird Assets
+    this.load.image('Bird_0', 
+    'PNG/Frame-1.png');
+    this.load.image('Bird_1', 
+    'PNG/frame-2.png');
+    this.load.image('Bird_2', 
+    'PNG/frame-3.png');
+    this.load.image('Bird_3', 
+    'PNG/frame-4.png');
+
+
+    //Score Assets
+    this.load.image('Score',
+    'craftpix-103151-island-game-gui/Island-game-gui/png/images/3 stars.png');
+    this.load.image('Score2',
+    'craftpix-103151-island-game-gui/Island-game-gui/png/images/2 stars.png');
+    this.load.image('Score1',
+    'craftpix-103151-island-game-gui/Island-game-gui/png/images/1 stars.png');
+    this.load.image('Score0',
+    'craftpix-103151-island-game-gui/Island-game-gui/png/images/0 stars.png');
+
+
+    // Banana assets
+    this.load.image('Snow_Ball', 
+    'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_2.png');
+
+    this.load.image('Cone', 
+    'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_3.png');
+
+    this.load.image('Jump', 
+    'craftpix-871511-free-jumping-up-game-items/PNG/Bonus_Items/Jump_Bonus_02.png');
+
+    // Pad
+    this.load.image('Pad', 
+    'craftpix-871511-free-jumping-up-game-items/PNG/Pads/Pad_02_1.png');
+
+    //Falling Down assets
+    this.load.image('Falling_Down_000', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/4.png');
+    this.load.image('Falling_Down_001', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/5.png');
+    this.load.image('Falling_Down_002', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/6.png');
+    this.load.image('Falling_Down_003', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Idle/1.png');
+
+    //Jump Start assets
+    this.load.image('Jump_Start_000', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/1.png');
+    this.load.image('Jump_Start_001', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/2.png');
+    this.load.image('Jump_Start_002', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/3.png');
+
+    //Walking Assets
+    this.load.image('Walk_001', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/1.png');
+    this.load.image('Walk_002', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/2.png');
+    this.load.image('Walk_003', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/3.png');
+    this.load.image('Walk_004', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/4.png');
+    this.load.image('Walk_005', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/5.png');
+    this.load.image('Walk_006', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/6.png');
+
+    //Jump Loop assets
+    this.load.image('Jump_Loop_000', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/3.png');
+
+    //Idle assets
+    this.load.image('Jump_Idle_000', 
+    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Idle/1.png');
+
+    this.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
+
+    }
+    create(){
+    	cursors = this.input.keyboard.createCursorKeys();
+        //  A simple background for our game
+        var background = this.add.image(180, 300, 'Background').setScale(0.35);
+        var Logo = this.add.image(180, 275, 'Logo').setScale(0.5);
+        var Button = this.add.image(180, 350, 'Button').setScale(0.1);
+	Button
+        .setInteractive()
+        .on('pointerover', () => {Button.setTexture('Button_hover').setScale(0.1)});
+	Button
+        .setInteractive()
+        .on('pointerout', () => {Button.setTexture('Button').setScale(0.1)});
+	Button
+        .setInteractive()
+        .on('pointerdown', () => {
+	    Button.setTexture('Button_down').setScale(0.1);	    
+        });
+	Button
+        .setInteractive()
+        .on('pointerup', () => {
+            this.scene.bringToTop('Play');
+            this.scene.start('Play');
+        });
+
+        background.setScrollFactor(0);
+    }
+    update(){
+	if (cursors.right.isDown){
+
+	}
+    }
+}
+
+class Score extends Phaser.Scene{
+    constructor(){
+        super({ key:'Score', active:false});
+    }
+    create(){
+    	cursors = this.input.keyboard.createCursorKeys();
+        //  A simple background for our game
+        var background = this.add.image(180, 300, 'Background').setScale(0.35);
+        var Logo = this.add.image(180, 200, 'Logo').setScale(0.5);
+        scoreText = this.add.text(180, 250, score, { fontSize: '28px', align:'center', fill: '#fff' });
+        scoreText.setOrigin(0.5);
+	
+	this.createStartButton();
+        this.createStars();
+
+	score = 0;
+        background.setScrollFactor(0);
+    }
+
+    createStars(){
+        if (score < 30) var Score = this.add.image(180,275,'Score0').setScale(0.25);
+	else if (score < 40) var Score = this.add.image(180,275,'Score1').setScale(0.25);
+	else if (score < 50) var Score = this.add.image(180,275,'Score2').setScale(0.25);
+	else var Score = this.add.image(180,275,'Score').setScale(0.25);
+    }
+
+    createStartButton(){
+        var Button = this.add.image(180, 350, 'Button').setScale(0.1);
+	Button
+        .setInteractive()
+        .on('pointerover', () => {Button.setTexture('Button_hover').setScale(0.1)})
+        .on('pointerout', () => {Button.setTexture('Button').setScale(0.1)})
+        .on('pointerdown', () => {
+	    Button.setTexture('Button_down').setScale(0.1);})
+        .on('pointerup', () => {
+	    Button.setTexture('Button').setScale(0.1);	    
+            this.scene.bringToTop('Play');
+            this.scene.start('Play');
+        });
+    }
+}
+
+
+class Play extends Phaser.Scene{
+    constructor(){
+        super({ key:'Play', active:false});
+    }
+
+    create(){
+        //  Input Events
+        cursors = this.input.keyboard.createCursorKeys();
+
+        coin = this.sound.add('Coin',{loop:false});
+        jump = this.sound.add('Jump',{loop:false});
+
+        this.anims.create({
+            key: 'falling_down',
+            frames: [
+                { key: 'Falling_Down_000', frame: null },
+                { key: 'Falling_Down_001', frame: null },
+                { key: 'Falling_Down_002', frame: null },
+                { key: 'Falling_Down_003', frame: null, duration: 50 }
+            ],
+            frameRate: 50
+        });
+
+        this.anims.create({
+            key: 'bird_flying',
+            frames: [
+                { key: 'Bird_0', frame: null },
+                { key: 'Bird_1', frame: null },
+                { key: 'Bird_2', frame: null },
+                { key: 'Bird_3', frame: null }
+            ],
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'jump_start',
+            frames: [
+                { key: 'Jump_Start_000', frame: null },
+                { key: 'Jump_Start_001', frame: null },
+                { key: 'Jump_Start_002', frame: null, duration: 50}
+            ],
+            frameRate: 50
+        });
+
+        this.anims.create({
+            key: 'jump_loop',
+            frames: [
+                { key: 'Jump_Loop_000', frame: null }
+            ],
+            frameRate: 20
+        });
+
+        this.anims.create({
+            key: 'idle',
+            frames: [
+                { key: 'Jump_Idle_000', frame: null }
+            ],
+            frameRate: 20
+        });
+
+
+        this.createPath();
+        this.createBackground();
+        this.createGrassyPads();
+        this.createBananas();
+        this.createBirds();
+        this.createBonuses();
+        this.createTarzen();
+        this.createScore();
+	this.createCamera();
+
+        // Declare Collision and OVerlaps
+        this.physics.add.collider(tarzen, pads, this.jumpPad.bind(this));
+        this.physics.add.overlap(tarzen, bananas, this.collideBanana.bind(this));
+        this.physics.add.overlap(tarzen, bonus, this.powerOverlap);
+        this.physics.add.collider(tarzen, birds, this.jumpOnBird.bind(this));
+
+
+    }
+
+    update(){
+        this.updateTarzen();
+	this.updateBirds();
+	this.updateBackground();
+	this.gameOver();
+    }
+
+    createCamera(){
+        this.cameras.main.setBounds(0,-20000, 300, 20600);
+        this.cameras.main.startFollow(tarzen,1,1, 100,100);
+    }
+ 
+    createPath(){
+        for (var i = 0; i < 200; i=i+1)
+        {
+            path[i]= {x: Phaser.Math.Between(50, 250), y:(475-i*100)};
+        }
+    }
+
+    createGrassyPads(){
+        // Some pads to collect, 10 in total
+        pads = this.physics.add.group({
+	    allowGravity:false,
+	    immovable:true,
+	    enableBody:true
+        });
+
+        for (var i = 0; i < path.length; i=i+1)
+        {
+	    var pad = pads.create(path[i].x,path[i].y+50, 'Pad').setScale(0.1);
+ 	    pad.body.checkCollision.down = false;
+    	    pad.body.checkCollision.left = false;
+    	    pad.body.checkCollision.right = false;
+        }
+    }
+
+
+    createBirds(){
+        // Some pads to collect, 10 in total
+        birds = this.physics.add.group({
+	    allowGravity:false,
+	    immovable:true,
+	    enableBody:true
+        });
+
+
+        for (var i = 0; i < path.length; i=i+1)
+        {
+	    if((i+2)%20 == 0) {
+		var bird = birds.create(path[i].x,path[i].y+100, 'Bird_0').setScale(0.05);
+		bird.anims.play('bird_flying', true);
+		bird.setVelocityX(50);
+            }
+        }
+    }
+
+    createBananas(){
+        //  Some bananas to collect, 10 in total
+        bananas = this.physics.add.group({allowGravity:false,immovable:true,enableBody:true});
+        for (var i = 0; i < path.length; i=i+1)
+        {
+	    if(i%3 ==0) var banana = bananas.create(path[i].x,path[i].y, 'Snow_Ball').setScale(0.1);
+        }
+    }
+
+    createScore(){
+        //  The score
+        var banana = this.add.image(25, 25, 'Snow_Ball').setScale(0.1);
+        banana.setScrollFactor(0);
+        scoreText = this.add.text(50, 6, '0', { fontSize: '24px', fill: '#fff', stroke: '#000000', strokeThickness: '2'});
+        scoreText.setScrollFactor(0);
+    }
+
+    createBonuses(){
+        //  Some bonus to collect, 10 in total
+        bonus = this.physics.add.group({allowGravity:false,immovable:true,enableBody:true});
+        for (var i = 0; i < path.length; i=i+1)
+        {
+            if((i+6)%20 == 0) var jump = bonus.create(path[i].x,path[i].y, 'Jump').setScale(0.1); 
+
+        }
+    }
+
+    createTarzen(){
+        // Declare tarzen
+        tarzen = this.physics.add.sprite(180, 500, 'Jump_Idle_000');
+        tarzen.setScale(0.045,0.045)﻿;
+        tarzen.anims.play('jump_start', true);
+        tarzen.setVelocityY(-750);
+    }
+
+    createBackground(){
+        //  A simple background for our game
+        background = this.add.image(180, 300, 'Background').setScale(0.70);
+        background.setScrollFactor(0);
+    }
+
+    updateBackground(){
+	background.setPosition((360-((180*tarzen.x)/180)), (50-((300*tarzen.y)/10000)));
+    }
+
+
+    flipLeft(){
+        tarzen.setVelocityX(-150);
+        tarzen.setFlipX(true);
+    }
+
+    flipRight(){  
+        tarzen.setVelocityX(150);
+        tarzen.setFlipX(false);
+    }
+
+    flipBirdLeft(bird){
+        bird.setVelocityX(-50);
+        bird.setFlipX(true);
+    }
+
+    flipBirdRight(bird){  
+        bird.setVelocityX(50);
+        bird.setFlipX(false);
+    }
+
+    updateTarzen(){
+        if((Math.round(tarzen.body.velocity.y) > 0) && (Math.round(tarzen.body.velocity.y) < 20) &&(!tarzen.body.touching.down)){
+	    tarzen.anims.play('falling_down', true);
+        }
+        if (cursors.right.isDown) this.flipRight();
+        else if (cursors.left.isDown) this.flipLeft();
+        else tarzen.setVelocityX(0);
+        if (tarzen.x > 330) this.flipLeft();
+        else if (tarzen.x < 30) this.flipRight();
+    }
+
+    updateBirds(){
+        birds.children.each(function(bird) {  
+            if (bird.x > 330) this.flipBirdLeft(bird);
+            else if (bird.x < 30) this.flipBirdRight(bird);
+        }, this);
+    }
+
+    jumpPad(tarzen,pad){
+        if ((tarzen.body.touching.down) && (pad.body.touching.up)){
+            this.tweens
+            .add({
+                targets: pad,
+                alpha: 0,
+                duration: 5000,
+                ease: 'Power2',
+	        onComplete:function(){
+                    pad.disableBody(true, true);
+	        }
+            }, this);
+            pad.setAccelerationY(500);
+	    tarzen.anims.play('jump_start', true);
+            tarzen.setVelocityY(-500);
+        }
+    }
+
+    jumpOnBird(tarzen,bird){
+        if ((tarzen.body.touching.down) && (bird.body.touching.up)){
+            jump.play();
+            this.tweens
+            .add({
+                targets: bird,
+                alpha: 0,
+                duration: 500,
+                ease: 'Power2',
+	        onComplete:function(){
+                    bird.disableBody(true, true);
+	        }
+            }, this);
+            bird.setAccelerationY(500);
+	    tarzen.anims.play('jump_start', true);
+            tarzen.setVelocityY(-1000);
+        }
+	else{
+            this.scene.bringToTop('Score');
+            this.scene.start('Score');
+	}
+    }
+
+    powerOverlap(tarzen, Bonus){
+	jump.play();
+        Bonus.disableBody(true, true);
+        tarzen.anims.play('jump_start', true);
+        tarzen.setVelocityY(-1000);  
+    }
+
+
+    collideBanana(tarzen, banana){
+        if(!banana.hasOverlapped){
+            banana.hasOverlapped = true;
+            this.tweens
+            .add({
+                targets: banana,
+                alpha: 0,
+                scale:0,
+                duration: 500,
+                ease: 'Power2',
+	        onComplete:function(){
+                    coin.play();
+                    banana.disableBody(true, true);
+		    score++;
+                    scoreText.setText(score);
+	        }
+            }, this);
+        }
+    }
+
+    gameOver(){
+        if(tarzen.body.velocity.y > 750){
+            this.scene.bringToTop('Score');
+            this.scene.start('Score');
+        }  
+    }
+}
+
+
+var config = {
+    type: Phaser.AUTO,
+    width: 360,
+    height: 600,
+    physics: {
+        default: 'arcade',
+        arcade: {
+            gravity: { y: 1000 },
+            debug: false
+        }
+    },
+    scene: [Menu, Play, Score]
+};
+
+var game = new Phaser.Game(config);
+
+</script>
+</body>
+</html>      
+  
