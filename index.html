@@ -160,17 +160,9 @@ class Menu extends Phaser.Scene{
         var Button = this.add.image(180, 350, 'Button').setScale(0.1);
 	Button
         .setInteractive()
-        .on('pointerover', () => {Button.setTexture('Button_hover').setScale(0.1)});
-	Button
-        .setInteractive()
-        .on('pointerout', () => {Button.setTexture('Button').setScale(0.1)});
-	Button
-        .setInteractive()
-        .on('pointerdown', () => {
-	    Button.setTexture('Button_down').setScale(0.1);	    
-        });
-	Button
-        .setInteractive()
+        .on('pointerover', () => {Button.setTexture('Button_hover').setScale(0.1)})
+        .on('pointerout', () => {Button.setTexture('Button').setScale(0.1)})
+        .on('pointerdown', () => { Button.setTexture('Button_down').setScale(0.1)})
         .on('pointerup', () => {
             this.scene.bringToTop('Play');
             this.scene.start('Play');
