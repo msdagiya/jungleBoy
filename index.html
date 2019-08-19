@@ -34,107 +34,122 @@ var forest;
 var coin;
 var jump;
 var birds;
-
+var loadingText;
 class Menu extends Phaser.Scene{
     constructor(){
         super({ key:'Menu', active:true});
     }
 
     preload(){
-    this.load.path = 'assets/';
-
-    // Forest Audio Asset
-    this.load.audio('Forest', '272417__thearxx08__forest-ambience.mp3');
-
-    // Coin Audio Asset
-    this.load.audio('Coin', '341695__projectsu012__coins-1.wav');
-
-    // Jump Audio Asset
-    this.load.audio('Jump', '350901__cabled-mess__jump-c-06.wav');
-
-    // Background assets
-    this.load.image('Background', 
-    'craftpix-809414-cartoon-vertical-game-backgrounds/png/1.png');
-
-    // Title assets
-    this.load.image('Logo', 'coollogo_com-3156672.png');
-
-    //Button assets
-    this.load.image('Button', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/normal/play.png');
-    this.load.image('Button_hover', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/hover/play.png');
-    this.load.image('Button_down', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/click/play.png');
-
-    //Bird Assets
-    this.load.image('Bird_0', 'PNG/Frame-1.png');
-    this.load.image('Bird_1', 'PNG/frame-2.png');
-    this.load.image('Bird_2', 'PNG/frame-3.png');
-    this.load.image('Bird_3', 'PNG/frame-4.png');
-
-    //Score Assets
-    this.load.image('Score',
-    'craftpix-103151-island-game-gui/Island-game-gui/png/images/3 stars.png');
-    this.load.image('Score2',
-    'craftpix-103151-island-game-gui/Island-game-gui/png/images/2 stars.png');
-    this.load.image('Score1',
-    'craftpix-103151-island-game-gui/Island-game-gui/png/images/1 stars.png');
-    this.load.image('Score0',
-    'craftpix-103151-island-game-gui/Island-game-gui/png/images/0 stars.png');
-
-    // Banana assets
-    this.load.image('Snow_Ball', 
-    'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_2.png');
-    this.load.image('Cone', 
-    'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_3.png');
-    this.load.image('Jump', 
-    'craftpix-871511-free-jumping-up-game-items/PNG/Bonus_Items/Jump_Bonus_02.png');
-
-    // Pad
-    this.load.image('Pad', 
-    'craftpix-871511-free-jumping-up-game-items/PNG/Pads/Pad_02_1.png');
-
-    //Falling Down assets
-    this.load.image('Falling_Down_000', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/4.png');
-    this.load.image('Falling_Down_001', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/5.png');
-    this.load.image('Falling_Down_002', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/6.png');
-    this.load.image('Falling_Down_003', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Idle/1.png');
-
-    //Jump Start assets
-    this.load.image('Jump_Start_000', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/1.png');
-    this.load.image('Jump_Start_001', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/2.png');
-    this.load.image('Jump_Start_002', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/3.png');
-
-    //Walking Assets
-    this.load.image('Walk_001', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/1.png');
-    this.load.image('Walk_002', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/2.png');
-    this.load.image('Walk_003', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/3.png');
-    this.load.image('Walk_004', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/4.png');
-    this.load.image('Walk_005', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/5.png');
-    this.load.image('Walk_006', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/6.png');
-
-    //Jump Loop assets
-    this.load.image('Jump_Loop_000', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/3.png');
-
-    //Idle assets
-    this.load.image('Jump_Idle_000', 
-    'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Idle/1.png');
-
-    this.load.script('webfont', '//ajax.googleapis.com/ajax/libs/webfont/1.4.7/webfont.js');
-
+        this.DisplayLoadingMessege();
+        this.LoadPath();
+        this.LoadImages();
+        this.LoadAudio();
     }
+
+    LoadPath(){
+        this.load.path = 'assets/';
+    }
+
+    LoadAudio(){
+        // Coin Audio Asset
+        this.load.audio('Coin', '341695__projectsu012__coins-1.wav');
+
+        // Jump Audio Asset
+        this.load.audio('Jump', '350901__cabled-mess__jump-c-06.wav');
+    }
+ 
+    LoadImages(){
+        // Title assets
+        this.load.image('Logo', 'coollogo_com-3156672.png');
+
+        //Button assets
+        this.load.image('Button', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/normal/play.png');
+        this.load.image('Button_hover', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/hover/play.png');
+        this.load.image('Button_down', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/click/play.png');
+
+        //Bird Assets
+        this.load.image('Bird_0', 'PNG/Frame-1.png');
+        this.load.image('Bird_1', 'PNG/frame-2.png');
+        this.load.image('Bird_2', 'PNG/frame-3.png');
+        this.load.image('Bird_3', 'PNG/frame-4.png');
+
+        //Score Assets
+        this.load.image('Score',
+        'craftpix-103151-island-game-gui/Island-game-gui/png/images/3 stars.png');
+        this.load.image('Score2',
+        'craftpix-103151-island-game-gui/Island-game-gui/png/images/2 stars.png');
+        this.load.image('Score1',
+        'craftpix-103151-island-game-gui/Island-game-gui/png/images/1 stars.png');
+        this.load.image('Score0',
+        'craftpix-103151-island-game-gui/Island-game-gui/png/images/0 stars.png');
+
+        // Banana assets
+        this.load.image('Snow_Ball', 
+        'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_2.png');
+        this.load.image('Cone', 
+        'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_3.png');
+        this.load.image('Jump', 
+        'craftpix-871511-free-jumping-up-game-items/PNG/Bonus_Items/Jump_Bonus_02.png');
+
+        // Pad
+        this.load.image('Pad', 
+        'craftpix-871511-free-jumping-up-game-items/PNG/Pads/Pad_02_1.png');
+
+        //Falling Down assets
+        this.load.image('Falling_Down_000', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/4.png');
+        this.load.image('Falling_Down_001', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/5.png');
+        this.load.image('Falling_Down_002', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/6.png');
+        this.load.image('Falling_Down_003', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Idle/1.png');
+
+        //Jump Start assets
+        this.load.image('Jump_Start_000', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/1.png');
+        this.load.image('Jump_Start_001', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/2.png');
+        this.load.image('Jump_Start_002', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/3.png');
+
+        //Walking Assets
+        this.load.image('Walk_001', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/1.png');
+        this.load.image('Walk_002', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/2.png');
+        this.load.image('Walk_003', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/3.png');
+        this.load.image('Walk_004', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/4.png');
+        this.load.image('Walk_005', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/5.png');
+        this.load.image('Walk_006', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/6.png');
+
+        //Jump Loop assets
+        this.load.image('Jump_Loop_000', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/3.png');
+
+        //Idle assets
+        this.load.image('Jump_Idle_000', 
+        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Idle/1.png');
+
+        // Background assets
+        this.load.image('Background', 
+        'craftpix-809414-cartoon-vertical-game-backgrounds/png/1.png');
+    }
+
+    DisplayLoadingMessege(){
+        loadingText = this.add.text(180, 300, '0%', { fontSize: '18px', align:'center', fill: '#fff' });
+        this.load.on('progress', function (value) {
+            console.log(value);
+            loadingText.setText(parseInt(value*100)+'%');
+            loadingText.setOrigin(0.5);
+        });
+    }
+
     create(){
     	cursors = this.input.keyboard.createCursorKeys();
         //  A simple background for our game
@@ -156,18 +171,13 @@ class Menu extends Phaser.Scene{
             this.scene.start('Play');
         });
     }
-
-    update(){
-	if (cursors.right.isDown){
-
-	}
-    }
 }
 
 class Score extends Phaser.Scene{
     constructor(){
         super({ key:'Score', active:false});
     }
+
     create(){
     	cursors = this.input.keyboard.createCursorKeys();
         //  A simple background for our game
@@ -267,7 +277,6 @@ class Play extends Phaser.Scene{
             ],
             frameRate: 20
         });
-
 
         this.createPath();
         this.createBackground();
@@ -411,7 +420,9 @@ class Play extends Phaser.Scene{
     }
 
     updateTarzen(){
-        if((Math.round(tarzen.body.velocity.y) > 0) && (Math.round(tarzen.body.velocity.y) < 20) &&(!tarzen.body.touching.down)){
+        if((Math.round(tarzen.body.velocity.y) > 0) 
+        && (Math.round(tarzen.body.velocity.y) < 20) 
+        &&(!tarzen.body.touching.down)){
 	    tarzen.anims.play('falling_down', true);
         }
         if (cursors.right.isDown) this.flipRight();
