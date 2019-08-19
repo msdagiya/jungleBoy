@@ -39,50 +39,36 @@ class Menu extends Phaser.Scene{
     constructor(){
         super({ key:'Menu', active:true});
     }
+
     preload(){
     this.load.path = 'assets/';
-
-
 
     // Forest Audio Asset
     this.load.audio('Forest', '272417__thearxx08__forest-ambience.mp3');
 
-
     // Coin Audio Asset
     this.load.audio('Coin', '341695__projectsu012__coins-1.wav');
 
-
     // Jump Audio Asset
     this.load.audio('Jump', '350901__cabled-mess__jump-c-06.wav');
-
 
     // Background assets
     this.load.image('Background', 
     'craftpix-809414-cartoon-vertical-game-backgrounds/png/1.png');
 
     // Title assets
-    this.load.image('Logo', 
-    'coollogo_com-3156672.png');
+    this.load.image('Logo', 'coollogo_com-3156672.png');
 
     //Button assets
-    this.load.image('Button',
-    'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/normal/play.png');
-    this.load.image('Button_hover',
-    'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/hover/play.png');
-    this.load.image('Button_down',
-    'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/click/play.png');
-
+    this.load.image('Button', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/normal/play.png');
+    this.load.image('Button_hover', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/hover/play.png');
+    this.load.image('Button_down', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/click/play.png');
 
     //Bird Assets
-    this.load.image('Bird_0', 
-    'PNG/Frame-1.png');
-    this.load.image('Bird_1', 
-    'PNG/frame-2.png');
-    this.load.image('Bird_2', 
-    'PNG/frame-3.png');
-    this.load.image('Bird_3', 
-    'PNG/frame-4.png');
-
+    this.load.image('Bird_0', 'PNG/Frame-1.png');
+    this.load.image('Bird_1', 'PNG/frame-2.png');
+    this.load.image('Bird_2', 'PNG/frame-3.png');
+    this.load.image('Bird_3', 'PNG/frame-4.png');
 
     //Score Assets
     this.load.image('Score',
@@ -94,14 +80,11 @@ class Menu extends Phaser.Scene{
     this.load.image('Score0',
     'craftpix-103151-island-game-gui/Island-game-gui/png/images/0 stars.png');
 
-
     // Banana assets
     this.load.image('Snow_Ball', 
     'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_2.png');
-
     this.load.image('Cone', 
     'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_3.png');
-
     this.load.image('Jump', 
     'craftpix-871511-free-jumping-up-game-items/PNG/Bonus_Items/Jump_Bonus_02.png');
 
@@ -157,6 +140,11 @@ class Menu extends Phaser.Scene{
         //  A simple background for our game
         var background = this.add.image(180, 300, 'Background').setScale(0.35);
         var Logo = this.add.image(180, 275, 'Logo').setScale(0.5);
+        this.createStartButton();
+        background.setScrollFactor(0);
+    }
+
+    createStartButton(){
         var Button = this.add.image(180, 350, 'Button').setScale(0.1);
 	Button
         .setInteractive()
@@ -167,9 +155,8 @@ class Menu extends Phaser.Scene{
             this.scene.bringToTop('Play');
             this.scene.start('Play');
         });
-
-        background.setScrollFactor(0);
     }
+
     update(){
 	if (cursors.right.isDown){
 
