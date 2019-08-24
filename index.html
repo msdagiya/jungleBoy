@@ -28,6 +28,7 @@ var bananas;
 var score = 0;
 var scoreText;
 var pads;
+var moving_pads;
 var bonus;
 var path = new Array(200);
 var forest;
@@ -35,9 +36,26 @@ var coin;
 var jump;
 var birds;
 var loadingText;
+
 class Menu extends Phaser.Scene{
+    createStartButton(x,y){
+        var Button = this.add.image(x, y, 'Button').setScale(0.1);
+	Button
+        .setInteractive()
+        .on('pointerover', () => {Button.setTexture('Button_hover').setScale(0.1)})
+        .on('pointerout', () => {Button.setTexture('Button').setScale(0.1)})
+        .on('pointerdown', () => { Button.setTexture('Button_down').setScale(0.1)})
+        .on('pointerup', () => {
+            this.scene.bringToTop('Play');
+            this.scene.start('Play');
+        });
+    }   
+}
+
+
+class Start extends Menu{
     constructor(){
-        super({ key:'Menu', active:true});
+        super({ key:'Start', active:true});
     }
 
     preload(){
@@ -75,76 +93,51 @@ class Menu extends Phaser.Scene{
         this.load.image('Bird_3', 'PNG/frame-4.png');
 
         //Score Assets
-        this.load.image('Score',
-        'craftpix-103151-island-game-gui/Island-game-gui/png/images/3 stars.png');
-        this.load.image('Score2',
-        'craftpix-103151-island-game-gui/Island-game-gui/png/images/2 stars.png');
-        this.load.image('Score1',
-        'craftpix-103151-island-game-gui/Island-game-gui/png/images/1 stars.png');
-        this.load.image('Score0',
-        'craftpix-103151-island-game-gui/Island-game-gui/png/images/0 stars.png');
+        this.load.image('Score','craftpix-103151-island-game-gui/Island-game-gui/png/images/3 stars.png');
+        this.load.image('Score2','craftpix-103151-island-game-gui/Island-game-gui/png/images/2 stars.png');
+        this.load.image('Score1','craftpix-103151-island-game-gui/Island-game-gui/png/images/1 stars.png');
+        this.load.image('Score0','craftpix-103151-island-game-gui/Island-game-gui/png/images/0 stars.png');
 
         // Banana assets
-        this.load.image('Snow_Ball', 
-        'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_2.png');
-        this.load.image('Cone', 
-        'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_3.png');
-        this.load.image('Jump', 
-        'craftpix-871511-free-jumping-up-game-items/PNG/Bonus_Items/Jump_Bonus_02.png');
+        this.load.image('Banana', 'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_2.png');
+        this.load.image('Cone', 'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_3.png');
+        this.load.image('Jump', 'craftpix-871511-free-jumping-up-game-items/PNG/Bonus_Items/Jump_Bonus_02.png');
 
         // Pad
-        this.load.image('Pad', 
-        'craftpix-871511-free-jumping-up-game-items/PNG/Pads/Pad_02_1.png');
+        this.load.image('Pad', 'craftpix-871511-free-jumping-up-game-items/PNG/Pads/Pad_02_1.png');
 
         //Falling Down assets
-        this.load.image('Falling_Down_000', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/4.png');
-        this.load.image('Falling_Down_001', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/5.png');
-        this.load.image('Falling_Down_002', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/6.png');
-        this.load.image('Falling_Down_003', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Idle/1.png');
+        this.load.image('Falling_Down_000', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/4.png');
+        this.load.image('Falling_Down_001', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/5.png');
+        this.load.image('Falling_Down_002', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/6.png');
+        this.load.image('Falling_Down_003', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Idle/1.png');
 
         //Jump Start assets
-        this.load.image('Jump_Start_000', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/1.png');
-        this.load.image('Jump_Start_001', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/2.png');
-        this.load.image('Jump_Start_002', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/3.png');
+        this.load.image('Jump_Start_000', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/1.png');
+        this.load.image('Jump_Start_001', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/2.png');
+        this.load.image('Jump_Start_002', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/3.png');
 
         //Walking Assets
-        this.load.image('Walk_001', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/1.png');
-        this.load.image('Walk_002', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/2.png');
-        this.load.image('Walk_003', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/3.png');
-        this.load.image('Walk_004', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/4.png');
-        this.load.image('Walk_005', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/5.png');
-        this.load.image('Walk_006', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/6.png');
+        this.load.image('Walk_001', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/1.png');
+        this.load.image('Walk_002', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/2.png');
+        this.load.image('Walk_003', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/3.png');
+        this.load.image('Walk_004', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/4.png');
+        this.load.image('Walk_005', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/5.png');
+        this.load.image('Walk_006', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Walk/6.png');
 
         //Jump Loop assets
-        this.load.image('Jump_Loop_000', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/3.png');
+        this.load.image('Jump_Loop_000', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/3.png');
 
         //Idle assets
-        this.load.image('Jump_Idle_000', 
-        'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Idle/1.png');
+        this.load.image('Jump_Idle_000', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Idle/1.png');
 
         // Background assets
-        this.load.image('Background', 
-        'craftpix-809414-cartoon-vertical-game-backgrounds/png/1.png');
+        this.load.image('Background', 'craftpix-809414-cartoon-vertical-game-backgrounds/png/1.png');
     }
 
     DisplayLoadingMessege(){
         loadingText = this.add.text(180, 300, '0%', { fontSize: '18px', align:'center', fill: '#fff' });
         this.load.on('progress', function (value) {
-            console.log(value);
             loadingText.setText(parseInt(value*100)+'%');
             loadingText.setOrigin(0.5);
         });
@@ -155,25 +148,12 @@ class Menu extends Phaser.Scene{
         //  A simple background for our game
         var background = this.add.image(180, 300, 'Background').setScale(0.35);
         var Logo = this.add.image(180, 275, 'Logo').setScale(0.5);
-        this.createStartButton();
+        this.createStartButton(180,350);
         background.setScrollFactor(0);
-    }
-
-    createStartButton(){
-        var Button = this.add.image(180, 350, 'Button').setScale(0.1);
-	Button
-        .setInteractive()
-        .on('pointerover', () => {Button.setTexture('Button_hover').setScale(0.1)})
-        .on('pointerout', () => {Button.setTexture('Button').setScale(0.1)})
-        .on('pointerdown', () => { Button.setTexture('Button_down').setScale(0.1)})
-        .on('pointerup', () => {
-            this.scene.bringToTop('Play');
-            this.scene.start('Play');
-        });
     }
 }
 
-class Score extends Phaser.Scene{
+class Score extends Menu{
     constructor(){
         super({ key:'Score', active:false});
     }
@@ -186,7 +166,7 @@ class Score extends Phaser.Scene{
         scoreText = this.add.text(180, 250, score, { fontSize: '28px', align:'center', fill: '#fff' });
         scoreText.setOrigin(0.5);
 	
-	this.createStartButton();
+	this.createStartButton(180, 350);
         this.createStars();
 
 	score = 0;
@@ -194,28 +174,13 @@ class Score extends Phaser.Scene{
     }
 
     createStars(){
-        if (score < 30) var Score = this.add.image(180,275,'Score0').setScale(0.25);
-	else if (score < 40) var Score = this.add.image(180,275,'Score1').setScale(0.25);
-	else if (score < 50) var Score = this.add.image(180,275,'Score2').setScale(0.25);
-	else var Score = this.add.image(180,275,'Score').setScale(0.25);
-    }
-
-    createStartButton(){
-        var Button = this.add.image(180, 350, 'Button').setScale(0.1);
-	Button
-        .setInteractive()
-        .on('pointerover', () => {Button.setTexture('Button_hover').setScale(0.1)})
-        .on('pointerout', () => {Button.setTexture('Button').setScale(0.1)})
-        .on('pointerdown', () => {
-	    Button.setTexture('Button_down').setScale(0.1);})
-        .on('pointerup', () => {
-	    Button.setTexture('Button').setScale(0.1);	    
-            this.scene.bringToTop('Play');
-            this.scene.start('Play');
-        });
+        // Maximum score of 50 is allowed
+        if (score < 35) this.add.image(180,275,'Score0').setScale(0.25);
+	else if (score < 40) this.add.image(180,275,'Score1').setScale(0.25);
+	else if (score < 45) this.add.image(180,275,'Score2').setScale(0.25);
+	else this.add.image(180,275,'Score').setScale(0.25);
     }
 }
-
 
 class Play extends Phaser.Scene{
     constructor(){
@@ -280,7 +245,8 @@ class Play extends Phaser.Scene{
 
         this.createPath();
         this.createBackground();
-        this.createGrassyPads();
+        this.createStaticGrassyPads();
+	this.createMovingGrassyPads();
         this.createBananas();
         this.createBirds();
         this.createBonuses();
@@ -290,6 +256,7 @@ class Play extends Phaser.Scene{
 
         // Declare Collision and OVerlaps
         this.physics.add.collider(tarzen, pads, this.jumpPad.bind(this));
+        this.physics.add.collider(tarzen, moving_pads, this.jumpPad.bind(this));
         this.physics.add.overlap(tarzen, bananas, this.collideBanana.bind(this));
         this.physics.add.overlap(tarzen, bonus, this.powerOverlap);
         this.physics.add.collider(tarzen, birds, this.jumpOnBird.bind(this));
@@ -300,6 +267,7 @@ class Play extends Phaser.Scene{
     update(){
         this.updateTarzen();
 	this.updateBirds();
+        this.updateMovingGrassyPads();
 	this.updateBackground();
 	this.gameOver();
     }
@@ -316,7 +284,7 @@ class Play extends Phaser.Scene{
         }
     }
 
-    createGrassyPads(){
+    createStaticGrassyPads(){
         // Some pads to collect, 10 in total
         pads = this.physics.add.group({
 	    allowGravity:false,
@@ -324,12 +292,30 @@ class Play extends Phaser.Scene{
 	    enableBody:true
         });
 
-        for (var i = 0; i < path.length; i=i+1)
+        for (var i = 0; i < path.length; i=i+2)
         {
 	    var pad = pads.create(path[i].x,path[i].y+50, 'Pad').setScale(0.1);
  	    pad.body.checkCollision.down = false;
     	    pad.body.checkCollision.left = false;
     	    pad.body.checkCollision.right = false;
+        }
+    }
+
+    createMovingGrassyPads(){
+        // Some pads to collect, 10 in total
+        moving_pads = this.physics.add.group({
+	    allowGravity:false,
+	    immovable:false,
+	    enableBody:true
+        });
+
+        for (var i = 1; i < path.length; i=i+2)
+        {
+	    var pad = moving_pads.create(path[i].x,path[i].y+50, 'Pad').setScale(0.1);
+ 	    pad.body.checkCollision.down = false;
+    	    pad.body.checkCollision.left = false;
+    	    pad.body.checkCollision.right = false;
+	    pad.setVelocityX(50);
         }
     }
 
@@ -358,13 +344,13 @@ class Play extends Phaser.Scene{
         bananas = this.physics.add.group({allowGravity:false,immovable:true,enableBody:true});
         for (var i = 0; i < path.length; i=i+1)
         {
-	    if(i%3 ==0) var banana = bananas.create(path[i].x,path[i].y, 'Snow_Ball').setScale(0.1);
+	    if(i%4 ==0) var banana = bananas.create(path[i].x,path[i].y, 'Banana').setScale(0.1);
         }
     }
 
     createScore(){
         //  The score
-        var banana = this.add.image(25, 25, 'Snow_Ball').setScale(0.1);
+        var banana = this.add.image(25, 25, 'Banana').setScale(0.1);
         banana.setScrollFactor(0);
         scoreText = this.add.text(50, 6, '0', { fontSize: '24px', fill: '#fff', stroke: '#000000', strokeThickness: '2'});
         scoreText.setScrollFactor(0);
@@ -399,24 +385,14 @@ class Play extends Phaser.Scene{
     }
 
 
-    flipLeft(){
-        tarzen.setVelocityX(-150);
-        tarzen.setFlipX(true);
+    flipLeft(object,speed){
+        object.setVelocityX(-1*speed);
+        object.setFlipX(true);
     }
 
-    flipRight(){  
-        tarzen.setVelocityX(150);
-        tarzen.setFlipX(false);
-    }
-
-    flipBirdLeft(bird){
-        bird.setVelocityX(-50);
-        bird.setFlipX(true);
-    }
-
-    flipBirdRight(bird){  
-        bird.setVelocityX(50);
-        bird.setFlipX(false);
+    flipRight(object,speed){  
+        object.setVelocityX(speed);
+        object.setFlipX(false);
     }
 
     updateTarzen(){
@@ -425,17 +401,24 @@ class Play extends Phaser.Scene{
         &&(!tarzen.body.touching.down)){
 	    tarzen.anims.play('falling_down', true);
         }
-        if (cursors.right.isDown) this.flipRight();
-        else if (cursors.left.isDown) this.flipLeft();
+        if (cursors.right.isDown) this.flipRight(tarzen,200);
+        else if (cursors.left.isDown) this.flipLeft(tarzen,200);
         else tarzen.setVelocityX(0);
-        if (tarzen.x > 330) this.flipLeft();
-        else if (tarzen.x < 30) this.flipRight();
+        if (tarzen.x > 330) this.flipLeft(tarzen,200);
+        else if (tarzen.x < 30) this.flipRight(tarzen,200);
     }
 
     updateBirds(){
         birds.children.each(function(bird) {  
-            if (bird.x > 330) this.flipBirdLeft(bird);
-            else if (bird.x < 30) this.flipBirdRight(bird);
+            if (bird.x > 330) this.flipLeft(bird, 50);
+            else if (bird.x < 30) this.flipRight(bird,50);
+        }, this);
+    }
+
+    updateMovingGrassyPads(){
+        moving_pads.children.each(function(moving_pad) {  
+            if (moving_pad.x > 300) this.flipLeft(moving_pad, 50);
+            else if (moving_pad.x < 50) this.flipRight(moving_pad,50);
         }, this);
     }
 
@@ -528,7 +511,7 @@ var config = {
             debug: false
         }
     },
-    scene: [Menu, Play, Score]
+    scene: [Start, Play, Score]
 };
 
 var game = new Phaser.Game(config);
