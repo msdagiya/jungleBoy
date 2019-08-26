@@ -495,14 +495,14 @@ class Play extends Phaser.Scene{
                     coin.play();
         	    // Declare tarzan
                     var point_image = self.physics.add.sprite(tarzan.x, tarzan.y-100, 'Point');
-                    point_image.setScale(0.5,0.5)﻿;
+                    point_image.setScale(0.25,0.25)﻿;
 		    banana.disableBody(true, true);
-                    point_image.setVelocityY(-250);
+                    point_image.setVelocityY(-150);
 		    self.tweens
                     .add({
                         targets: point_image,
                         alpha: 0,
-                        scale:1.5,
+                        scale:1,
                         duration:2000,
                         ease:'Power2',
                         onComplete:function(){
