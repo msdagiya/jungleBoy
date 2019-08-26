@@ -20,7 +20,7 @@
     </div>
 
 <script type="text/javascript">
-var tarzen;
+var tarzan;
 var background;
 var cursors;
 var fire;
@@ -86,6 +86,8 @@ class Start extends Menu{
         // Title assets
         this.load.image('Logo', 'coollogo_com-3156672.png');
 
+        this.load.image('Point', 'cooltext333863632753835.png');
+
         //Button assets
         this.load.image('Button', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/normal/play.png');
         this.load.image('Button_hover', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/hover/play.png');
@@ -96,6 +98,8 @@ class Start extends Menu{
         this.load.image('Bird_1', 'PNG/frame-2.png');
         this.load.image('Bird_2', 'PNG/frame-3.png');
         this.load.image('Bird_3', 'PNG/frame-4.png');
+
+
 
         //Score Assets
         this.load.image('Score','craftpix-103151-island-game-gui/Island-game-gui/png/images/3 stars.png');
@@ -260,11 +264,11 @@ class Play extends Phaser.Scene{
 	this.createCamera();
 
         // Declare Collision and OVerlaps
-        this.physics.add.collider(tarzen, pads, this.jumpPad.bind(this));
-        this.physics.add.collider(tarzen, moving_pads, this.jumpPad.bind(this));
-        this.physics.add.overlap(tarzen, bananas, this.collideBanana.bind(this));
-        this.physics.add.overlap(tarzen, bonus, this.powerOverlap);
-        this.physics.add.collider(tarzen, birds, this.jumpOnBird.bind(this));
+        this.physics.add.collider(tarzan, pads, this.jumpPad.bind(this));
+        this.physics.add.collider(tarzan, moving_pads, this.jumpPad.bind(this));
+        this.physics.add.overlap(tarzan, bananas, this.collideBanana.bind(this));
+        this.physics.add.overlap(tarzan, bonus, this.powerOverlap);
+        this.physics.add.collider(tarzan, birds, this.jumpOnBird.bind(this));
 
 
     }
@@ -279,7 +283,7 @@ class Play extends Phaser.Scene{
 
     createCamera(){
         this.cameras.main.setBounds(0,-20000, 300, 20600);
-        this.cameras.main.startFollow(tarzen,1,1, 100,100);
+        this.cameras.main.startFollow(tarzan,1,1, 100,100);
     }
  
     createPath(){
@@ -372,11 +376,11 @@ class Play extends Phaser.Scene{
     }
 
     createTarzen(){
-        // Declare tarzen
-        tarzen = this.physics.add.sprite(180, 500, 'Jump_Idle_000');
-        tarzen.setScale(0.045,0.045)﻿;
-        tarzen.anims.play('jump_start', true);
-        tarzen.setVelocityY(-750);
+        // Declare tarzan
+        tarzan = this.physics.add.sprite(180, 500, 'Jump_Idle_000');
+        tarzan.setScale(0.045,0.045)﻿;
+        tarzan.anims.play('jump_start', true);
+        tarzan.setVelocityY(-750);
     }
 
     createBackground(){
@@ -386,7 +390,7 @@ class Play extends Phaser.Scene{
     }
 
     updateBackground(){
-	background.setPosition((360-((180*tarzen.x)/180)), (50-((300*tarzen.y)/10000)));
+	background.setPosition((360-((180*tarzan.x)/180)), (50-((300*tarzan.y)/10000)));
     }
 
 
@@ -401,16 +405,16 @@ class Play extends Phaser.Scene{
     }
 
     updateTarzen(){
-        if((Math.round(tarzen.body.velocity.y) > 0) 
-        && (Math.round(tarzen.body.velocity.y) < 20) 
-        &&(!tarzen.body.touching.down)){
-	    tarzen.anims.play('falling_down', true);
+        if((Math.round(tarzan.body.velocity.y) > 0) 
+        && (Math.round(tarzan.body.velocity.y) < 20) 
+        &&(!tarzan.body.touching.down)){
+	    tarzan.anims.play('falling_down', true);
         }
-        if (cursors.right.isDown) this.flipRight(tarzen,200);
-        else if (cursors.left.isDown) this.flipLeft(tarzen,200);
-        else tarzen.setVelocityX(0);
-        if (tarzen.x > 330) this.flipLeft(tarzen,200);
-        else if (tarzen.x < 30) this.flipRight(tarzen,200);
+        if (cursors.right.isDown) this.flipRight(tarzan,200);
+        else if (cursors.left.isDown) this.flipLeft(tarzan,200);
+        else tarzan.setVelocityX(0);
+        if (tarzan.x > 330) this.flipLeft(tarzan,200);
+        else if (tarzan.x < 30) this.flipRight(tarzan,200);
     }
 
     updateBirds(){
@@ -427,8 +431,8 @@ class Play extends Phaser.Scene{
         }, this);
     }
 
-    jumpPad(tarzen,pad){
-        if ((tarzen.body.touching.down) && (pad.body.touching.up)){
+    jumpPad(tarzan,pad){
+        if ((tarzan.body.touching.down) && (pad.body.touching.up)){
             this.tweens
             .add({
                 targets: pad,
@@ -440,13 +444,13 @@ class Play extends Phaser.Scene{
 	        }
             }, this);
             pad.setAccelerationY(500);
-	    tarzen.anims.play('jump_start', true);
-            tarzen.setVelocityY(-500);
+	    tarzan.anims.play('jump_start', true);
+            tarzan.setVelocityY(-500);
         }
     }
 
-    jumpOnBird(tarzen,bird){
-        if ((tarzen.body.touching.down) && (bird.body.touching.up)){
+    jumpOnBird(tarzan,bird){
+        if ((tarzan.body.touching.down) && (bird.body.touching.up)){
             jump.play();
             this.tweens
             .add({
@@ -459,8 +463,8 @@ class Play extends Phaser.Scene{
 	        }
             }, this);
             bird.setAccelerationY(500);
-	    tarzen.anims.play('jump_start', true);
-            tarzen.setVelocityY(-1000);
+	    tarzan.anims.play('jump_start', true);
+            tarzan.setVelocityY(-1000);
         }
 	else{
             this.scene.bringToTop('Score');
@@ -468,18 +472,19 @@ class Play extends Phaser.Scene{
 	}
     }
 
-    powerOverlap(tarzen, Bonus){
+    powerOverlap(tarzan, Bonus){
 	jump.play();
         Bonus.disableBody(true, true);
-        tarzen.anims.play('jump_start', true);
-        tarzen.setVelocityY(-1000);  
+        tarzan.anims.play('jump_start', true);
+        tarzan.setVelocityY(-1000);  
     }
 
 
-    collideBanana(tarzen, banana){
+    collideBanana(tarzan, banana){
+	var self = this;
         if(!banana.hasOverlapped){
             banana.hasOverlapped = true;
-            this.tweens
+            self.tweens
             .add({
                 targets: banana,
                 alpha: 0,
@@ -488,16 +493,29 @@ class Play extends Phaser.Scene{
                 ease: 'Power2',
 	        onComplete:function(){
                     coin.play();
-                    banana.disableBody(true, true);
+        	    // Declare tarzan
+                    var point_image = self.physics.add.sprite(tarzan.x, tarzan.y-100, 'Point');
+                    point_image.setScale(0.5,0.5)﻿;
+		    banana.disableBody(true, true);
+		    self.tweens
+                    .add({
+                        targets: point_image,
+                        alpha: 0,
+                        duration:1000,
+                        ease:'Power2',
+                        onComplete:function(){
+                            point_image.disableBody(true,true);
+                        }
+                    }, self);
 		    score++;
                     scoreText.setText(score);
 	        }
-            }, this);
+            }, self);
         }
     }
 
     gameOver(){
-        if(tarzen.body.velocity.y > 750){
+        if(tarzan.body.velocity.y > 750){
             this.scene.bringToTop('Score');
             this.scene.start('Score');
         }  
