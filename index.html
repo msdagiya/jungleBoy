@@ -489,7 +489,7 @@ class Play extends Phaser.Scene{
                 targets: banana,
                 alpha: 0,
                 scale:0,
-                duration: 500,
+                duration: 250,
                 ease: 'Power2',
 	        onComplete:function(){
                     coin.play();
@@ -497,11 +497,13 @@ class Play extends Phaser.Scene{
                     var point_image = self.physics.add.sprite(tarzan.x, tarzan.y-100, 'Point');
                     point_image.setScale(0.5,0.5)﻿;
 		    banana.disableBody(true, true);
+                    point_image.setVelocityY(-250);
 		    self.tweens
                     .add({
                         targets: point_image,
                         alpha: 0,
-                        duration:1000,
+                        scale:1.5,
+                        duration:2000,
                         ease:'Power2',
                         onComplete:function(){
                             point_image.disableBody(true,true);
