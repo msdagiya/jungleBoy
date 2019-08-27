@@ -114,6 +114,7 @@ class Start extends Menu{
 
         // Pad
         this.load.image('Pad', 'craftpix-871511-free-jumping-up-game-items/PNG/Pads/Pad_02_1.png');
+        this.load.image('Sharp_Pad', 'craftpix-871511-free-jumping-up-game-items/PNG/Pads/Pad_02_2.png');
 
         //Falling Down assets
         this.load.image('Falling_Down_000', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/4.png');
@@ -378,7 +379,7 @@ class Play extends Phaser.Scene{
     createTarzen(){
         // Declare tarzan
         tarzan = this.physics.add.sprite(180, 500, 'Jump_Idle_000');
-        tarzan.setScale(0.045,0.045)﻿;
+        tarzan.setScale(0.04,0.04)﻿;
         tarzan.anims.play('jump_start', true);
         tarzan.setVelocityY(-750);
     }
@@ -494,19 +495,19 @@ class Play extends Phaser.Scene{
 	        onComplete:function(){
                     coin.play();
         	    // Declare tarzan
-                    var point_image = self.physics.add.sprite(tarzan.x, tarzan.y-100, 'Point');
-                    point_image.setScale(0.25,0.25)﻿;
+                    var point = self.physics.add.sprite(tarzan.x, tarzan.y-100, 'Point');
+                    point.setScale(0.25,0.25)﻿;
 		    banana.disableBody(true, true);
-                    point_image.setVelocityY(-150);
+                    point.setVelocityY(-350);
 		    self.tweens
                     .add({
-                        targets: point_image,
+                        targets: point,
                         alpha: 0,
                         scale:1,
-                        duration:2000,
+                        duration:1000,
                         ease:'Power2',
                         onComplete:function(){
-                            point_image.disableBody(true,true);
+                            point.disableBody(true,true);
                         }
                     }, self);
 		    score++;
