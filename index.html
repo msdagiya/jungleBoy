@@ -36,7 +36,9 @@ var coin;
 var jump;
 var birds;
 var loadingText;
-
+var key_left;
+var key_right;
+var current_pad;
 class Menu extends Phaser.Scene{
     createStartButton(x,y){
         var Button = this.add.image(x, y, 'Button').setScale(0.1);
@@ -86,6 +88,7 @@ class Start extends Menu{
         // Title assets
         this.load.image('Logo', 'coollogo_com-3156672.png');
 
+	// Point assets
         this.load.image('Point', 'cooltext333863632753835.png');
 
         //Button assets
@@ -227,6 +230,20 @@ class Play extends Phaser.Scene{
             repeat: -1
         });
 
+
+        this.anims.create({
+            key: 'walk',
+            frames: [
+                { key: 'Walk_001', frame: null },
+                { key: 'Walk_002', frame: null },
+                { key: 'Walk_003', frame: null },
+                { key: 'Walk_004', frame: null },
+                { key: 'Walk_005', frame: null },
+                { key: 'Walk_006', frame: null }
+            ],
+            frameRate: 20,
+        });
+
         this.anims.create({
             key: 'jump_start',
             frames: [
@@ -253,6 +270,7 @@ class Play extends Phaser.Scene{
             frameRate: 20
         });
 
+
         this.createPath();
         this.createBackground();
         this.createStaticGrassyPads();
@@ -265,8 +283,8 @@ class Play extends Phaser.Scene{
 	this.createCamera();
 
         // Declare Collision and OVerlaps
-        this.physics.add.collider(tarzan, pads, this.jumpPad.bind(this));
-        this.physics.add.collider(tarzan, moving_pads, this.jumpPad.bind(this));
+        this.physics.add.collider(tarzan, pads, this.touchPad.bind(this));
+        this.physics.add.collider(tarzan, moving_pads, this.touchPad.bind(this));
         this.physics.add.overlap(tarzan, bananas, this.collideBanana.bind(this));
         this.physics.add.overlap(tarzan, bonus, this.powerOverlap);
         this.physics.add.collider(tarzan, birds, this.jumpOnBird.bind(this));
@@ -286,7 +304,7 @@ class Play extends Phaser.Scene{
         this.cameras.main.setBounds(0,-20000, 300, 20600);
         this.cameras.main.startFollow(tarzan,1,1, 100,100);
     }
- 
+
     createPath(){
         for (var i = 0; i < 200; i=i+1)
         {
@@ -315,7 +333,7 @@ class Play extends Phaser.Scene{
         // Some pads to collect, 10 in total
         moving_pads = this.physics.add.group({
 	    allowGravity:false,
-	    immovable:false,
+	    immovable:true,
 	    enableBody:true
         });
 
@@ -379,8 +397,7 @@ class Play extends Phaser.Scene{
     createTarzen(){
         // Declare tarzan
         tarzan = this.physics.add.sprite(180, 500, 'Jump_Idle_000');
-        tarzan.setScale(0.04,0.04)﻿;
-        tarzan.anims.play('jump_start', true);
+        tarzan.setScale(0.035,0.035)﻿;
         tarzan.setVelocityY(-750);
     }
 
@@ -406,14 +423,27 @@ class Play extends Phaser.Scene{
     }
 
     updateTarzen(){
-        if((Math.round(tarzan.body.velocity.y) > 0) 
-        && (Math.round(tarzan.body.velocity.y) < 20) 
-        &&(!tarzan.body.touching.down)){
-	    tarzan.anims.play('falling_down', true);
+
+       if (tarzan.body.touching.down){
+           tarzan.body.friction.x = 1;
+           current_pad.body.friction.x = 1;
+       }
+
+        if ((cursors.up.isDown) && (tarzan.body.touching.down)) this.jumpPad(tarzan,current_pad);
+
+        if (cursors.right.isDown){ 
+            tarzan.anims.play('walk', true);
+            this.flipRight(tarzan,200);
+	    
         }
-        if (cursors.right.isDown) this.flipRight(tarzan,200);
-        else if (cursors.left.isDown) this.flipLeft(tarzan,200);
-        else tarzan.setVelocityX(0);
+        else if (cursors.left.isDown) {
+            this.flipLeft(tarzan,200);
+	    tarzan.anims.play('walk', true);
+        }
+        else{
+            tarzan.setVelocityX(0);
+        }
+
         if (tarzan.x > 330) this.flipLeft(tarzan,200);
         else if (tarzan.x < 30) this.flipRight(tarzan,200);
     }
@@ -432,6 +462,10 @@ class Play extends Phaser.Scene{
         }, this);
     }
 
+    touchPad(tarzen,pad){
+	current_pad = pad;
+    }
+
     jumpPad(tarzan,pad){
         if ((tarzan.body.touching.down) && (pad.body.touching.up)){
             this.tweens
@@ -445,7 +479,6 @@ class Play extends Phaser.Scene{
 	        }
             }, this);
             pad.setAccelerationY(500);
-	    tarzan.anims.play('jump_start', true);
             tarzan.setVelocityY(-500);
         }
     }
@@ -464,7 +497,6 @@ class Play extends Phaser.Scene{
 	        }
             }, this);
             bird.setAccelerationY(500);
-	    tarzan.anims.play('jump_start', true);
             tarzan.setVelocityY(-1000);
         }
 	else{
@@ -476,7 +508,6 @@ class Play extends Phaser.Scene{
     powerOverlap(tarzan, Bonus){
 	jump.play();
         Bonus.disableBody(true, true);
-        tarzan.anims.play('jump_start', true);
         tarzan.setVelocityY(-1000);  
     }
 
@@ -545,4 +576,3 @@ var game = new Phaser.Game(config);
 </script>
 </body>
 </html>      
-  
