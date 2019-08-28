@@ -42,16 +42,17 @@ var current_pad;
 class Menu extends Phaser.Scene{
     createStartButton(x,y){
         var Button = this.add.image(x, y, 'Button').setScale(0.1);
+        var self = this;
+
 	Button
-        .setInteractive()
-        .on('pointerover', () => {Button.setTexture('Button_hover').setScale(0.1)})
+        .setInteractive({useHandCursor: true})
+        .on('pointerover', () => {Button.setTexture('Button_hover').setScale(0.1);})
         .on('pointerout', () => {Button.setTexture('Button').setScale(0.1)})
         .on('pointerdown', () => { Button.setTexture('Button_down').setScale(0.1)})
         .on('pointerup', () => {
             this.scene.bringToTop('Play');
             this.scene.start('Play');
         });
-        var self = this;
         this.tweens
         .add({
             targets: Button,
