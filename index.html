@@ -393,7 +393,7 @@ class Play extends Phaser.Scene{
                 targets: banana,
                 scale:0.1,
                 duration: 1000,
-                ease: 'bounce',
+                ease: 'Power2',
                 repeat:-1,
                 yoyo:true
             }, this);
@@ -449,15 +449,17 @@ class Play extends Phaser.Scene{
 
     updateTarzen(){
         if ((cursors.up.isDown) && (tarzan.body.touching.down)) this.jumpPad(tarzan,current_pad);
-
         if (cursors.right.isDown){ 
-            tarzan.anims.play('walk', true);
             this.flipRight(tarzan,200);
-	    
+	    if (tarzan.body.touching.down){
+                tarzan.anims.play('walk', true);
+            }
         }
         else if (cursors.left.isDown) {
             this.flipLeft(tarzan,200);
-	    tarzan.anims.play('walk', true);
+	    if (tarzan.body.touching.down){
+                tarzan.anims.play('walk', true);
+            }
         }
         else{
             tarzan.setVelocityX(0);
