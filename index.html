@@ -51,13 +51,15 @@ class Menu extends Phaser.Scene{
             this.scene.bringToTop('Play');
             this.scene.start('Play');
         });
+        var self = this;
         this.tweens
         .add({
             targets: Button,
             scale:0.125,
             duration: 500,
             ease: 'Power2',
-            repeat: 10000
+            repeat: -1,
+            yoyo:true
         }, this);
     }   
 }
@@ -383,15 +385,16 @@ class Play extends Phaser.Scene{
         for (var i = 0; i < path.length; i=i+1)
         {
 	    if(i%4 ==0){ 
-                var banana = bananas.create(path[i].x,path[i].y, 'Banana').setScale(0.075);
+                var banana = bananas.create(path[i].x,path[i].y, 'Banana').setScale(0.05);
             }
             this.tweens
             .add({
                 targets: banana,
                 scale:0.1,
                 duration: 1000,
-                ease: 'power2',
-                repeat:10000
+                ease: 'bounce',
+                repeat:-1,
+                yoyo:true
             }, this);
         }
     }
