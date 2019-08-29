@@ -12,7 +12,7 @@
         }
     </style>
 </head>
-<body style="width:720px;padding:20px;margin:auto auto;">
+<body style="width:720px;margin:auto auto;">
     <div style="width:360px; float:left;padding:0px 40px; box-sizing:border-box;display:block;"> 
         <a href="https://github.com/msdagiya"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_left_red_aa0000.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
         <h1>Jungle Boy Game</h1>
@@ -39,6 +39,8 @@ var loadingText;
 var key_left;
 var key_right;
 var current_pad;
+var particles;
+
 class Menu extends Phaser.Scene{
     createStartButton(x,y){
         var Button = this.add.image(x, y, 'Button').setScale(0.1);
@@ -113,8 +115,6 @@ class Start extends Menu{
         this.load.image('Bird_2', 'PNG/frame-3.png');
         this.load.image('Bird_3', 'PNG/frame-4.png');
 
-
-
         //Score Assets
         this.load.image('Score','craftpix-103151-island-game-gui/Island-game-gui/png/images/3 stars.png');
         this.load.image('Score2','craftpix-103151-island-game-gui/Island-game-gui/png/images/2 stars.png');
@@ -131,15 +131,14 @@ class Start extends Menu{
         this.load.image('Sharp_Pad', 'craftpix-871511-free-jumping-up-game-items/PNG/Pads/Pad_02_2.png');
 
         //Falling Down assets
-        this.load.image('Falling_Down_000', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/4.png');
-        this.load.image('Falling_Down_001', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/5.png');
-        this.load.image('Falling_Down_002', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/6.png');
-        this.load.image('Falling_Down_003', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Idle/1.png');
+        this.load.image('Falling_Down', 'Jumping_boy_sprites_v102/Transparent PNG/Jump/Jump-fall.png');
 
-        //Jump Start assets
-        this.load.image('Jump_Start_000', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/1.png');
-        this.load.image('Jump_Start_001', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/2.png');
-        this.load.image('Jump_Start_002', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/3.png');
+        //Jump Up assets
+        this.load.image('Jump_Up', 'Jumping_boy_sprites_v102/Transparent PNG/Jump/Jump-up.png');
+
+        //Idle assets
+        this.load.image('Idle_000', 'Jumping_boy_sprites_v102/Transparent PNG/Idle/frame-1.png');
+        this.load.image('Idle_001', 'Jumping_boy_sprites_v102/Transparent PNG/Idle/frame-2.png');
 
         //Walking Assets
         this.load.image('Walk_001', 'Jumping_boy_sprites_v102/Transparent PNG/running/frame-1.png');
@@ -148,12 +147,6 @@ class Start extends Menu{
         this.load.image('Walk_004', 'Jumping_boy_sprites_v102/Transparent PNG/running/frame-4.png');
         this.load.image('Walk_005', 'Jumping_boy_sprites_v102/Transparent PNG/running/frame-5.png');
         this.load.image('Walk_006', 'Jumping_boy_sprites_v102/Transparent PNG/running/frame-6.png');
-
-        //Jump Loop assets
-        this.load.image('Jump_Loop_000', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Jump/3.png');
-
-        //Idle assets
-        this.load.image('Jump_Idle_000', 'craftpix-097918-character-island-boy/Character-Island-Boy/png/1/Idle/1.png');
 
         // Background assets
         this.load.image('Background', 'craftpix-809414-cartoon-vertical-game-backgrounds/png/1.png');
@@ -217,70 +210,6 @@ class Play extends Phaser.Scene{
 
         coin = this.sound.add('Coin',{loop:false});
         jump = this.sound.add('Jump',{loop:false});
-
-        this.anims.create({
-            key: 'falling_down',
-            frames: [
-                { key: 'Falling_Down_000', frame: null },
-                { key: 'Falling_Down_001', frame: null },
-                { key: 'Falling_Down_002', frame: null },
-                { key: 'Falling_Down_003', frame: null, duration: 50 }
-            ],
-            frameRate: 50
-        });
-
-        this.anims.create({
-            key: 'bird_flying',
-            frames: [
-                { key: 'Bird_0', frame: null },
-                { key: 'Bird_1', frame: null },
-                { key: 'Bird_2', frame: null },
-                { key: 'Bird_3', frame: null }
-            ],
-            frameRate: 10,
-            repeat: -1
-        });
-
-
-        this.anims.create({
-            key: 'walk',
-            frames: [
-                { key: 'Walk_001', frame: null },
-                { key: 'Walk_002', frame: null },
-                { key: 'Walk_003', frame: null },
-                { key: 'Walk_004', frame: null },
-                { key: 'Walk_005', frame: null },
-                { key: 'Walk_006', frame: null }
-            ],
-            frameRate: 20,
-        });
-
-        this.anims.create({
-            key: 'jump_start',
-            frames: [
-                { key: 'Jump_Start_000', frame: null },
-                { key: 'Jump_Start_001', frame: null },
-                { key: 'Jump_Start_002', frame: null, duration: 50}
-            ],
-            frameRate: 50
-        });
-
-        this.anims.create({
-            key: 'jump_loop',
-            frames: [
-                { key: 'Jump_Loop_000', frame: null }
-            ],
-            frameRate: 20
-        });
-
-        this.anims.create({
-            key: 'idle',
-            frames: [
-                { key: 'Jump_Idle_000', frame: null }
-            ],
-            frameRate: 20
-        });
-
 
         this.createPath();
         this.createBackground();
@@ -362,6 +291,18 @@ class Play extends Phaser.Scene{
 
 
     createBirds(){
+        this.anims.create({
+            key: 'bird_flying',
+            frames: [
+                { key: 'Bird_0', frame: null },
+                { key: 'Bird_1', frame: null },
+                { key: 'Bird_2', frame: null },
+                { key: 'Bird_3', frame: null }
+            ],
+            frameRate: 10,
+            repeat: -1
+        });
+
         // Some pads to collect, 10 in total
         birds = this.physics.add.group({
 	    allowGravity:false,
@@ -419,8 +360,47 @@ class Play extends Phaser.Scene{
     }
 
     createTarzen(){
+        // Create Tarzan
+        this.anims.create({
+            key: 'falling_down',
+            frames: [
+                { key: 'Falling_Down', frame: null },
+            ],
+            frameRate: 50
+        });
+
+        this.anims.create({
+            key: 'jump_up',
+            frames: [
+                { key: 'Jump_Up', frame: null }
+            ],
+            frameRate: 50
+        });
+
+        this.anims.create({
+            key: 'walk',
+            frames: [
+                { key: 'Walk_001', frame: null },
+                { key: 'Walk_002', frame: null },
+                { key: 'Walk_003', frame: null },
+                { key: 'Walk_004', frame: null },
+                { key: 'Walk_005', frame: null },
+                { key: 'Walk_006', frame: null }
+            ],
+            frameRate: 10,
+        });
+
+        this.anims.create({
+            key: 'idle',
+            frames: [
+                { key: 'Idle_000', frame: null },
+                { key: 'Idle_001', frame: null }
+            ],
+            frameRate: 5
+        });
+
         // Declare tarzan
-        tarzan = this.physics.add.sprite(90, 90, 'Walk_001');
+        tarzan = this.physics.add.sprite(180, 450, 'Walk_001');
         tarzan.setScale(0.075,0.075)﻿;
         tarzan.setVelocityY(-750);
         tarzan.body.friction.x = 1;
@@ -467,6 +447,10 @@ class Play extends Phaser.Scene{
 
         if (tarzan.x > 330) this.flipLeft(tarzan,200);
         else if (tarzan.x < 30) this.flipRight(tarzan,200);
+
+        if (tarzan.body.velocity.y < 0) tarzan.anims.play('falling_down', true);
+        if (tarzan.body.velocity.y > 0) tarzan.anims.play('jump_up', true);
+        if ((tarzan.body.velocity.y == 0) && (tarzan.body.velocity.x == 0))tarzan.anims.play('idle', true);
     }
 
     updateBirds(){
