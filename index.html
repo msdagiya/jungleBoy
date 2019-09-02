@@ -40,6 +40,7 @@ var key_left;
 var key_right;
 var current_pad;
 var particles;
+var mini_tarzen;
 
 class Menu extends Phaser.Scene{
     createStartButton(x,y){
@@ -121,7 +122,11 @@ class Start extends Menu{
         this.load.image('Score1','craftpix-103151-island-game-gui/Island-game-gui/png/images/1 stars.png');
         this.load.image('Score0','craftpix-103151-island-game-gui/Island-game-gui/png/images/0 stars.png');
 
+	// scrollbar
+        this.load.image('ScrollBar','craftpix-103151-island-game-gui/Island-game-gui/png/images/horisontal skrolling map.png');
+        
         // Banana assets
+
         this.load.image('Banana', 'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_2.png');
         this.load.image('Cone', 'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_3.png');
         this.load.image('Jump', 'craftpix-871511-free-jumping-up-game-items/PNG/Bonus_Items/Jump_Bonus_02.png');
@@ -221,6 +226,7 @@ class Play extends Phaser.Scene{
         this.createTarzen();
         this.createScore();
 	this.createCamera();
+        this.createCompleteBar();
 
         // Declare Collision and OVerlaps
         this.physics.add.collider(tarzan, pads, this.touchPad.bind(this));
@@ -237,6 +243,7 @@ class Play extends Phaser.Scene{
 	this.updateBirds();
         this.updateMovingGrassyPads();
 	this.updateBackground();
+        this.updateCompleteBar();
 	this.gameOver();
     }
 
@@ -250,6 +257,14 @@ class Play extends Phaser.Scene{
         {
             path[i]= {x: Phaser.Math.Between(50, 250), y:(475-i*100)};
         }
+    }
+
+    createCompleteBar(){
+         var scrollbar = this.add.image(230, 25, 'ScrollBar').setScale(0.22);
+        scrollbar.setScrollFactor(0);
+        mini_tarzen = this.add.sprite(130, 25, 'Walk_001');
+        mini_tarzen.setScrollFactor(0);
+        mini_tarzen.setScale(0.050,0.050)﻿;
     }
 
     createStaticGrassyPads(){
@@ -458,6 +473,10 @@ class Play extends Phaser.Scene{
             if (bird.x > 330) this.flipLeft(bird, 50);
             else if (bird.x < 30) this.flipRight(bird,50);
         }, this);
+    }
+
+    updateCompleteBar(){
+        mini_tarzen.setX(-1*tarzan.y/20000*200 + 130);
     }
 
     updateMovingGrassyPads(){
