@@ -41,6 +41,7 @@ var key_right;
 var current_pad;
 var particles;
 var mini_tarzen;
+var volume = 0;
 
 class Menu extends Phaser.Scene{
     createStartButton(x,y){
@@ -102,13 +103,20 @@ class Start extends Menu{
         // Title assets
         this.load.image('Logo', 'coollogo_com-3156672.png');
 
-	// Point assets
+		
+	    // Point assets
         this.load.image('Point', 'cooltext333863632753835.png');
 
         //Button assets
         this.load.image('Button', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/normal/play.png');
         this.load.image('Button_hover', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/hover/play.png');
         this.load.image('Button_down', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/click/play.png');
+
+		// Volume button Assets
+        this.load.image('ButtonVolume_hover', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/hover/volume.png');
+        this.load.image('ButtonVolume_lock', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/lock/volume.png');
+        this.load.image('ButtonVolume', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/normal/volume.png');
+		this.load.image('ButtonVolume_click', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/click/volume.png');
 
         //Bird Assets
         this.load.image('Bird_0', 'PNG/Frame-1.png');
@@ -122,7 +130,7 @@ class Start extends Menu{
         this.load.image('Score1','craftpix-103151-island-game-gui/Island-game-gui/png/images/1 stars.png');
         this.load.image('Score0','craftpix-103151-island-game-gui/Island-game-gui/png/images/0 stars.png');
 
-	// scrollbar
+	    // scrollbar
         this.load.image('ScrollBar','craftpix-103151-island-game-gui/Island-game-gui/png/images/horisontal skrolling map.png');
         
         // Banana assets
@@ -187,20 +195,18 @@ class Score extends Menu{
         var Logo = this.add.image(180, 200, 'Logo').setScale(0.5);
         scoreText = this.add.bitmapText(180, 260, 'myfont', score,42); 
         scoreText.setOrigin(0.5);
-	
-	this.createStartButton(180, 375);
+	    this.createStartButton(180, 375);
         this.createStars();
-
-	score = 0;
+	    score = 0;
         background.setScrollFactor(0);
     }
 
     createStars(){
         // Maximum score of 50 is allowed
         if (score < 35) this.add.image(180,300,'Score0').setScale(0.25);
-	else if (score < 40) this.add.image(180,300,'Score1').setScale(0.25);
-	else if (score < 45) this.add.image(180,300,'Score2').setScale(0.25);
-	else this.add.image(180,300,'Score').setScale(0.25);
+	    else if (score < 40) this.add.image(180,300,'Score1').setScale(0.25);
+	    else if (score < 45) this.add.image(180,300,'Score2').setScale(0.25);
+	    else this.add.image(180,300,'Score').setScale(0.25);
     }
 }
 
@@ -219,13 +225,14 @@ class Play extends Phaser.Scene{
         this.createPath();
         this.createBackground();
         this.createStaticGrassyPads();
-	this.createMovingGrassyPads();
+	    this.createMovingGrassyPads();
         this.createBananas();
         this.createBirds();
         this.createBonuses();
         this.createTarzen();
         this.createScore();
-	this.createCamera();
+	    this.createCamera();
+		this.createVolume(290,25);
         this.createCompleteBar();
 
         // Declare Collision and OVerlaps
@@ -234,38 +241,36 @@ class Play extends Phaser.Scene{
         this.physics.add.overlap(tarzan, bananas, this.collideBanana.bind(this));
         this.physics.add.overlap(tarzan, bonus, this.powerOverlap);
         this.physics.add.collider(tarzan, birds, this.jumpOnBird.bind(this));
-
-
-    }
+    };
 
     update(){
         this.updateTarzen();
-	this.updateBirds();
+	    this.updateBirds();
         this.updateMovingGrassyPads();
-	this.updateBackground();
+	    this.updateBackground();
         this.updateCompleteBar();
-	this.gameOver();
-    }
-
+	    this.gameOver();
+    };
+    
     createCamera(){
         this.cameras.main.setBounds(0,-20000, 300, 20600);
         this.cameras.main.startFollow(tarzan,1,1, 100,100);
-    }
+    };
 
     createPath(){
         for (var i = 0; i < 200; i=i+1)
         {
             path[i]= {x: Phaser.Math.Between(50, 250), y:(475-i*100)};
         }
-    }
+    };
 
     createCompleteBar(){
-         var scrollbar = this.add.image(230, 25, 'ScrollBar').setScale(0.22);
+        var scrollbar = this.add.image(190, 25, 'ScrollBar').setScale(0.15);
         scrollbar.setScrollFactor(0);
         mini_tarzen = this.add.sprite(130, 25, 'Walk_001');
         mini_tarzen.setScrollFactor(0);
         mini_tarzen.setScale(0.050,0.050)﻿;
-    }
+    };
 
     createStaticGrassyPads(){
         // Some pads to collect, 10 in total
@@ -283,7 +288,7 @@ class Play extends Phaser.Scene{
     	    pad.body.checkCollision.right = false;
             pad.body.friction.x = 1;
         }
-    }
+    };
 
     createMovingGrassyPads(){
         // Some pads to collect, 10 in total
@@ -295,16 +300,52 @@ class Play extends Phaser.Scene{
 
         for (var i = 1; i < path.length; i=i+2)
         {
-	    var pad = moving_pads.create(path[i].x,path[i].y+50, 'Pad').setScale(0.1);
- 	    pad.body.checkCollision.down = false;
+	        var pad = moving_pads.create(path[i].x,path[i].y+50, 'Pad').setScale(0.1);
+ 	        pad.body.checkCollision.down = false;
     	    pad.body.checkCollision.left = false;
     	    pad.body.checkCollision.right = false;
             pad.body.friction.x = 1;
-	    pad.setVelocityX(50);
+	        pad.setVelocityX(50);
         }
-    }
+    };
+	
+    createVolume(x,y){
+	    var Button = this.add.image(x, y, 'ButtonVolume').setScale(0.05);
+        var self = this;
+		Button.setTexture('ButtonVolume_lock').setScale(0.05);
+	    Button
+        .setInteractive({useHandCursor: true})
+        .on('pointerover', () => {Button.setTexture('ButtonVolume_hover').setScale(0.05);})
+        .on('pointerout', () => {
+		    if (volume == 1){ 
+				Button.setTexture('ButtonVolume').setScale(0.05);
+			}
+            else if (volume == 0){
+			    Button.setTexture('ButtonVolume_lock').setScale(0.05);
+			}
+		})
+        .on('pointerdown', () => { 
+		Button.setTexture('ButtonVolume_click').setScale(0.05)
+			if (volume == 1){ 
+				volume = 0;
+			}
+			else if (volume == 0){ 
+				volume = 1;
+			}
+		});
+        this.tweens
+        .add({
+            targets: Button,
+            scale:0.04,
+            duration: 500,
+            ease: 'Power2',
+            repeat: -1,
+            yoyo:true
+        }, this);
+		Button.setScrollFactor(0);
 
-
+    };
+	
     createBirds(){
         this.anims.create({
             key: 'bird_flying',
@@ -445,13 +486,13 @@ class Play extends Phaser.Scene{
     updateTarzen(){
         if ((cursors.up.isDown) && (tarzan.body.touching.down)) this.jumpPad(tarzan,current_pad);
         if (cursors.right.isDown){ 
-            this.flipRight(tarzan,200);
+            this.flipRight(tarzan,150);
 	    if (tarzan.body.touching.down){
                 tarzan.anims.play('walk', true);
             }
         }
         else if (cursors.left.isDown) {
-            this.flipLeft(tarzan,200);
+            this.flipLeft(tarzan,150);
 	    if (tarzan.body.touching.down){
                 tarzan.anims.play('walk', true);
             }
@@ -476,7 +517,7 @@ class Play extends Phaser.Scene{
     }
 
     updateCompleteBar(){
-        mini_tarzen.setX(-1*tarzan.y/20000*200 + 130);
+        mini_tarzen.setX(-1*tarzan.y/20000*150 + 130);
     }
 
     updateMovingGrassyPads(){
@@ -509,7 +550,7 @@ class Play extends Phaser.Scene{
 
     jumpOnBird(tarzan,bird){
         if ((tarzan.body.touching.down) && (bird.body.touching.up)){
-            jump.play();
+            if (volume == 1) jump.play();
             this.tweens
             .add({
                 targets: bird,
@@ -530,7 +571,7 @@ class Play extends Phaser.Scene{
     }
 
     powerOverlap(tarzan, Bonus){
-	jump.play();
+	    if(volume == 1) jump.play();
         Bonus.disableBody(true, true);
         tarzan.setVelocityY(-1000);  
     }
@@ -547,14 +588,14 @@ class Play extends Phaser.Scene{
                 scale:0,
                 duration: 250,
                 ease: 'Power2',
-	        onComplete:function(){
-                    coin.play();
-        	    // Declare tarzan
+	            onComplete:function(){
+                    if (volume == 1) coin.play();
+        	        // Declare tarzan
                     var point = self.physics.add.sprite(tarzan.x, tarzan.y-100, 'Point');
                     point.setScale(0.25,0.25)﻿;
-		    banana.disableBody(true, true);
+		            banana.disableBody(true, true);
                     point.setVelocityY(-350);
-		    self.tweens
+		            self.tweens
                     .add({
                         targets: point,
                         alpha: 0,
@@ -565,9 +606,9 @@ class Play extends Phaser.Scene{
                             point.disableBody(true,true);
                         }
                     }, self);
-		    score++;
+		            score++;
                     scoreText.setText(score);
-	        }
+	            }
             }, self);
         }
     }
