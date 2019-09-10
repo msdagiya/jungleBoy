@@ -282,11 +282,27 @@ class Play extends Phaser.Scene{
 
         for (var i = 0; i < path.length; i=i+2)
         {
-	    var pad = pads.create(path[i].x,path[i].y+50, 'Pad').setScale(0.1);
- 	    pad.body.checkCollision.down = false;
-    	    pad.body.checkCollision.left = false;
-    	    pad.body.checkCollision.right = false;
-            pad.body.friction.x = 1;
+	        var padl = pads.create(path[i].x,path[i].y+50, 'Pad').setScale(0.1);
+			padl.body.checkCollision.down = false;
+    	    padl.body.checkCollision.left = false;
+    	    padl.body.checkCollision.right = false;
+            padl.body.friction.x = 1;
+			
+			if(path[i].x < 150){
+			    var padr = pads.create(Phaser.Math.Between(path[i].x + 150, 250),path[i].y+50, 'Sharp_Pad').setScale(0.1);
+			    padr.body.checkCollision.down = false;
+    	        padr.body.checkCollision.left = false;
+    	        padr.body.checkCollision.right = false;
+                padr.body.friction.x = 0.5;
+			}
+			else{
+			    var padr = pads.create(Phaser.Math.Between(50, path[i].x-150),path[i].y+50, 'Sharp_Pad').setScale(0.1);
+			    padr.body.checkCollision.down = false;
+    	        padr.body.checkCollision.left = false;
+    	        padr.body.checkCollision.right = false;
+                padr.body.friction.x = 0.5;			
+			}
+		
         }
     };
 
@@ -333,15 +349,6 @@ class Play extends Phaser.Scene{
 				volume = 1;
 			}
 		});
-        this.tweens
-        .add({
-            targets: Button,
-            scale:0.04,
-            duration: 500,
-            ease: 'Power2',
-            repeat: -1,
-            yoyo:true
-        }, this);
 		Button.setScrollFactor(0);
 
     };
@@ -485,14 +492,19 @@ class Play extends Phaser.Scene{
 
     updateTarzen(){
         if ((cursors.up.isDown) && (tarzan.body.touching.down)) this.jumpPad(tarzan,current_pad);
+		
+		if ((tarzan.body.touching.down) && (current_pad.body.friction.x == 0.5)){
+            this.scene.bringToTop('Score');
+            this.scene.start('Score');
+		} 
         if (cursors.right.isDown){ 
-            this.flipRight(tarzan,150);
+            this.flipRight(tarzan,100);
 	    if (tarzan.body.touching.down){
                 tarzan.anims.play('walk', true);
             }
         }
         else if (cursors.left.isDown) {
-            this.flipLeft(tarzan,150);
+            this.flipLeft(tarzan,100);
 	    if (tarzan.body.touching.down){
                 tarzan.anims.play('walk', true);
             }
@@ -517,7 +529,7 @@ class Play extends Phaser.Scene{
     }
 
     updateCompleteBar(){
-        mini_tarzen.setX(-1*tarzan.y/20000*150 + 130);
+        mini_tarzen.setX(-tarzan.y/20000*120 + 135);
     }
 
     updateMovingGrassyPads(){
@@ -528,7 +540,7 @@ class Play extends Phaser.Scene{
     }
 
     touchPad(tarzen,pad){
-	current_pad = pad;
+	    current_pad = pad;
     }
 
     jumpPad(tarzan,pad){
