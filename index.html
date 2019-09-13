@@ -60,7 +60,7 @@ class Menu extends Phaser.Scene{
         this.tweens
         .add({
             targets: Button,
-            scale:0.125,
+            scale:0.1125,
             duration: 500,
             ease: 'Power2',
             repeat: -1,
@@ -193,7 +193,7 @@ class Score extends Menu{
         //  A simple background for our game
         var background = this.add.image(180, 300, 'Background').setScale(0.35);
         var Logo = this.add.image(180, 200, 'Logo').setScale(0.5);
-        scoreText = this.add.bitmapText(180, 260, 'myfont', score,42); 
+        scoreText = this.add.bitmapText(180, 260, 'myfont', score,36); 
         scoreText.setOrigin(0.5);
 	    this.createStartButton(180, 375);
         this.createStars();
@@ -232,7 +232,7 @@ class Play extends Phaser.Scene{
         this.createTarzen();
         this.createScore();
 	    this.createCamera();
-		this.createVolume(290,25);
+		this.createVolume(290,23,0.04);
         this.createCompleteBar();
 
         // Declare Collision and OVerlaps
@@ -325,23 +325,23 @@ class Play extends Phaser.Scene{
         }
     };
 	
-    createVolume(x,y){
-	    var Button = this.add.image(x, y, 'ButtonVolume').setScale(0.05);
+    createVolume(x,y,scale){
+	    var Button = this.add.image(x, y, 'ButtonVolume').setScale(scale);
         var self = this;
-		Button.setTexture('ButtonVolume_lock').setScale(0.05);
+		Button.setTexture('ButtonVolume_lock').setScale(scale);
 	    Button
         .setInteractive({useHandCursor: true})
-        .on('pointerover', () => {Button.setTexture('ButtonVolume_hover').setScale(0.05);})
+        .on('pointerover', () => {Button.setTexture('ButtonVolume_hover').setScale(scale);})
         .on('pointerout', () => {
 		    if (volume == 1){ 
-				Button.setTexture('ButtonVolume').setScale(0.05);
+				Button.setTexture('ButtonVolume').setScale(scale);
 			}
             else if (volume == 0){
-			    Button.setTexture('ButtonVolume_lock').setScale(0.05);
+			    Button.setTexture('ButtonVolume_lock').setScale(scale);
 			}
 		})
         .on('pointerdown', () => { 
-		Button.setTexture('ButtonVolume_click').setScale(0.05)
+		Button.setTexture('ButtonVolume_click').setScale(scale)
 			if (volume == 1){ 
 				volume = 0;
 			}
@@ -408,7 +408,7 @@ class Play extends Phaser.Scene{
         //  The score
         var banana = this.add.image(25, 25, 'Banana').setScale(0.1);
         banana.setScrollFactor(0);
-        scoreText = this.add.bitmapText(50, 6, 'myfont', score,36 ); 
+        scoreText = this.add.bitmapText(50, 10, 'myfont', score,24 ); 
         scoreText.setScrollFactor(0);
     }
 
