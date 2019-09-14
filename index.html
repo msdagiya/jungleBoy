@@ -42,7 +42,10 @@ var current_pad;
 var particles;
 var mini_tarzen;
 var volume = 0;
-
+var time=0;
+var time_text;
+var clock;
+var time_sprite;
 class Menu extends Phaser.Scene{
     createStartButton(x,y){
         var Button = this.add.image(x, y, 'Button').setScale(0.1);
@@ -111,6 +114,9 @@ class Start extends Menu{
         this.load.image('Button', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/normal/play.png');
         this.load.image('Button_hover', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/hover/play.png');
         this.load.image('Button_down', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/click/play.png');
+
+        //Time
+        this.load.image('Time', 'craftpix-103151-island-game-gui/Island-game-gui/png/frames/time.png');
 
 		// Volume button Assets
         this.load.image('ButtonVolume_hover', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/hover/volume.png');
@@ -193,7 +199,9 @@ class Score extends Menu{
         //  A simple background for our game
         var background = this.add.image(180, 300, 'Background').setScale(0.35);
         var Logo = this.add.image(180, 200, 'Logo').setScale(0.5);
-        scoreText = this.add.bitmapText(180, 260, 'myfont', score,36); 
+        var final_score = score*10-time;
+        if(final_score < 0) final_score = 0;
+        scoreText = this.add.bitmapText(180, 260, 'myfont',final_score ,36);
         scoreText.setOrigin(0.5);
 	    this.createStartButton(180, 375);
         this.createStars();
@@ -215,6 +223,27 @@ class Play extends Phaser.Scene{
         super({ key:'Play', active:false});
     }
 
+    startClock(){
+        this.clearClock();
+        var self = this;
+        clock = setInterval(function(){
+            self.tweens
+            .add({
+                targets: time_text,
+                scale:1.25,
+                duration: 500,
+                ease: 'Power2',
+                yoyo:true
+            }, self);
+            time++;
+        }, 1000);
+
+    };
+
+    clearClock(){
+        clearInterval(clock);
+    };
+
     create(){
         //  Input Events
         cursors = this.input.keyboard.createCursorKeys();
@@ -234,6 +263,7 @@ class Play extends Phaser.Scene{
 	    this.createCamera();
 		this.createVolume(290,23,0.04);
         this.createCompleteBar();
+        this.createTime();
 
         // Declare Collision and OVerlaps
         this.physics.add.collider(tarzan, pads, this.touchPad.bind(this));
@@ -249,6 +279,7 @@ class Play extends Phaser.Scene{
         this.updateMovingGrassyPads();
 	    this.updateBackground();
         this.updateCompleteBar();
+        this.updateTime();
 	    this.gameOver();
     };
     
@@ -262,6 +293,20 @@ class Play extends Phaser.Scene{
         {
             path[i]= {x: Phaser.Math.Between(50, 250), y:(475-i*100)};
         }
+    };
+
+    createTime(){
+        time_sprite = this.add.sprite(180, 550, 'Time');
+        time_sprite.setScale(0.2,0.2)﻿;
+        time_sprite.setScrollFactor(0);
+        time_text = this.add.text(170, 540, time, {fill : 'black'});
+        time_text.setScrollFactor(0);
+        time = 0;
+        this.startClock();
+    };
+
+    updateTime(){
+        time_text.text = time;
     };
 
     createCompleteBar(){
@@ -553,7 +598,7 @@ class Play extends Phaser.Scene{
                 ease: 'Power2',
 	        onComplete:function(){
                     pad.disableBody(true, true);
-	        }
+	           }
             }, this);
             pad.setAccelerationY(500);
             tarzan.setVelocityY(-500);
@@ -576,10 +621,10 @@ class Play extends Phaser.Scene{
             bird.setAccelerationY(500);
             tarzan.setVelocityY(-1000);
         }
-	else{
+	   else{
             this.scene.bringToTop('Score');
             this.scene.start('Score');
-	}
+	   }
     }
 
     powerOverlap(tarzan, Bonus){
