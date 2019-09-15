@@ -8,7 +8,7 @@
     <style type="text/css">
         body {
             margin: 0;
-	    font-family: 'Slabo 27px', serif;
+	        font-family: 'Slabo 27px', serif;
         }
     </style>
 </head>
@@ -46,6 +46,8 @@ var time=0;
 var time_text;
 var clock;
 var time_sprite;
+var game_over;
+
 class Menu extends Phaser.Scene{
     createStartButton(x,y){
         var Button = this.add.image(x, y, 'Button').setScale(0.1);
@@ -100,6 +102,10 @@ class Start extends Menu{
 
         // Jump Audio Asset
         this.load.audio('Jump', '350901__cabled-mess__jump-c-06.wav');
+
+        // GameOver Asset
+        this.load.audio('GameOver', '382310__myfox14__game-over-arcade.wav');
+
     }
  
     LoadImages(){
@@ -231,7 +237,7 @@ class Play extends Phaser.Scene{
             .add({
                 targets: time_text,
                 scale:1.25,
-                duration: 500,
+                duration: 250,
                 ease: 'Power2',
                 yoyo:true
             }, self);
@@ -250,6 +256,7 @@ class Play extends Phaser.Scene{
 
         coin = this.sound.add('Coin',{loop:false});
         jump = this.sound.add('Jump',{loop:false});
+        game_over = this.sound.add('GameOver',{loop:false});
 
         this.createPath();
         this.createBackground();
@@ -261,7 +268,7 @@ class Play extends Phaser.Scene{
         this.createTarzen();
         this.createScore();
 	    this.createCamera();
-		this.createVolume(290,23,0.04);
+		this.createVolume(320,570,0.05);
         this.createCompleteBar();
         this.createTime();
 
@@ -280,7 +287,6 @@ class Play extends Phaser.Scene{
 	    this.updateBackground();
         this.updateCompleteBar();
         this.updateTime();
-	    this.gameOver();
     };
     
     createCamera(){
@@ -296,10 +302,10 @@ class Play extends Phaser.Scene{
     };
 
     createTime(){
-        time_sprite = this.add.sprite(180, 550, 'Time');
-        time_sprite.setScale(0.2,0.2)﻿;
+        time_sprite = this.add.sprite(310, 25, 'Time');
+        time_sprite.setScale(0.125,0.125)﻿;
         time_sprite.setScrollFactor(0);
-        time_text = this.add.text(170, 540, time, {fill : 'black'});
+        time_text = this.add.text(305, 18, time, {fill : 'black'});
         time_text.setScrollFactor(0);
         time = 0;
         this.startClock();
@@ -521,7 +527,7 @@ class Play extends Phaser.Scene{
     }
 
     updateBackground(){
-	background.setPosition((360-((180*tarzan.x)/180)), (50-((300*tarzan.y)/10000)));
+	    background.setPosition((360-((180*tarzan.x)/180)), (50-((300*tarzan.y)/10000)));
     }
 
 
@@ -539,9 +545,11 @@ class Play extends Phaser.Scene{
         if ((cursors.up.isDown) && (tarzan.body.touching.down)) this.jumpPad(tarzan,current_pad);
 		
 		if ((tarzan.body.touching.down) && (current_pad.body.friction.x == 0.5)){
-            this.scene.bringToTop('Score');
-            this.scene.start('Score');
+            this.gameOver();
 		} 
+        if(tarzan.body.velocity.y > 750){
+            this.gameOver();
+        }
         if (cursors.right.isDown){ 
             this.flipRight(tarzan,100);
 	    if (tarzan.body.touching.down){
@@ -622,8 +630,7 @@ class Play extends Phaser.Scene{
             tarzan.setVelocityY(-1000);
         }
 	   else{
-            this.scene.bringToTop('Score');
-            this.scene.start('Score');
+            this.gameOver();
 	   }
     }
 
@@ -671,10 +678,9 @@ class Play extends Phaser.Scene{
     }
 
     gameOver(){
-        if(tarzan.body.velocity.y > 750){
-            this.scene.bringToTop('Score');
-            this.scene.start('Score');
-        }  
+        if(volume != 0) game_over.play();
+        this.scene.bringToTop('Score');
+        this.scene.start('Score');
     }
 }
 
