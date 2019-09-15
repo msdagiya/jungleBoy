@@ -122,7 +122,7 @@ class Start extends Menu{
         this.load.image('Button_down', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/click/play.png');
 
         //Time
-        this.load.image('Time', 'craftpix-103151-island-game-gui/Island-game-gui/png/frames/time.png');
+        this.load.image('Time', 'craftpix-103151-island-game-gui/Island-game-gui/png/images/clock.png');
 
 		// Volume button Assets
         this.load.image('ButtonVolume_hover', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/hover/volume.png');
@@ -303,10 +303,14 @@ class Play extends Phaser.Scene{
     };
 
     createTime(){
-        time_sprite = this.add.sprite(310, 25, 'Time');
-        time_sprite.setScale(0.125,0.125)﻿;
+        time_sprite = this.add.sprite(285, 25, 'Time');
+        time_sprite.setScale(0.15,0.15)﻿;
         time_sprite.setScrollFactor(0);
-        time_text = this.add.text(305, 18, time, {fill : 'black'});
+        time_text = this.add.text(305, 18, time, {
+            fontSize:18, 
+            fill : 'black', 
+            fontWeight:'bold'
+        });
         time_text.setScrollFactor(0);
         time = 0;
         this.startClock();
@@ -547,25 +551,27 @@ class Play extends Phaser.Scene{
 		
 		if ((tarzan.body.touching.down) && (current_pad.body.friction.x == 0.5)){
             this.gameOver();
-		} 
+		}
+
         if(tarzan.body.velocity.y > 750){
             this.gameOver();
         }
+
         if (cursors.right.isDown){ 
             this.flipRight(tarzan,100);
-	    if (tarzan.body.touching.down){
+	        if (tarzan.body.touching.down){
                 tarzan.anims.play('walk', true);
             }
         }
+
         else if (cursors.left.isDown) {
             this.flipLeft(tarzan,100);
-	    if (tarzan.body.touching.down){
+	        if (tarzan.body.touching.down){
                 tarzan.anims.play('walk', true);
             }
         }
-        else{
-            tarzan.setVelocityX(0);
-        }
+
+        else tarzan.setVelocityX(0);
 
         if (tarzan.x > 330) this.flipLeft(tarzan,200);
         else if (tarzan.x < 30) this.flipRight(tarzan,200);
@@ -638,7 +644,7 @@ class Play extends Phaser.Scene{
     powerOverlap(tarzan, Bonus){
 	    if(volume == 1) jump.play();
         Bonus.disableBody(true, true);
-        tarzan.setVelocityY(-1000);  
+        tarzan.setVelocityY(-1000);
     }
 
 
