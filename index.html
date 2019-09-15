@@ -233,15 +233,16 @@ class Play extends Phaser.Scene{
         this.clearClock();
         var self = this;
         clock = setInterval(function(){
+            time++;
             self.tweens
             .add({
                 targets: time_text,
-                scale:1.25,
+                alpha:0,
                 duration: 250,
                 ease: 'Power2',
                 yoyo:true
             }, self);
-            time++;
+            
         }, 1000);
 
     };
