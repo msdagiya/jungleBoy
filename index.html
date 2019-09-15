@@ -234,15 +234,6 @@ class Play extends Phaser.Scene{
         var self = this;
         clock = setInterval(function(){
             time++;
-            self.tweens
-            .add({
-                targets: time_text,
-                alpha:0,
-                duration: 250,
-                ease: 'Power2',
-                yoyo:true
-            }, self);
-            
         }, 1000);
 
     };
