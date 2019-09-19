@@ -18,13 +18,12 @@
         <h1>Jungle Boy Game</h1>
         <p>Use right and left keys to jump the tarzan on the static and movings pads. Collect bananas and Jumps, avoid bird and Jump on birds to get extra jump</p>
     </div>
-
 <script type="text/javascript">
 var tarzan;
 var background;
 var cursors;
 var fire;
-var bananas;
+var objects;
 var score = 0;
 var scoreText;
 var pads;
@@ -47,7 +46,7 @@ var time_text;
 var clock;
 var time_sprite;
 var game_over;
-
+var scores = [0,0,0,0];
 class Menu extends Phaser.Scene{
     createStartButton(x,y){
         var Button = this.add.image(x, y, 'Button').setScale(0.1);
@@ -59,8 +58,8 @@ class Menu extends Phaser.Scene{
         .on('pointerout', () => {Button.setTexture('Button').setScale(0.1)})
         .on('pointerdown', () => { Button.setTexture('Button_down').setScale(0.1)})
         .on('pointerup', () => {
-            this.scene.bringToTop('Play');
-            this.scene.start('Play');
+            this.scene.bringToTop('Level1');
+            this.scene.start('Level1');
         });
         this.tweens
         .add({
@@ -72,7 +71,7 @@ class Menu extends Phaser.Scene{
             yoyo:true
         }, this);
     }   
-}
+};
 
 
 class Start extends Menu{
@@ -130,6 +129,12 @@ class Start extends Menu{
         this.load.image('ButtonVolume', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/normal/volume.png');
 		this.load.image('ButtonVolume_click', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/click/volume.png');
 
+        // Round button Assets
+        this.load.image('ButtonRound_hover', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/hover/round.png');
+        this.load.image('ButtonRound_lock', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/lock/round.png');
+        this.load.image('ButtonRound', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/normal/round.png');
+        this.load.image('ButtonRound_click', 'craftpix-103151-island-game-gui/Island-game-gui/png/buttons/click/round.png');
+
         //Bird Assets
         this.load.image('Bird_0', 'PNG/Frame-1.png');
         this.load.image('Bird_1', 'PNG/frame-2.png');
@@ -147,13 +152,17 @@ class Start extends Menu{
         
         // Banana assets
 
-        this.load.image('Banana', 'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_2.png');
-        this.load.image('Cone', 'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_3.png');
+        this.load.image('Banana', 'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_3.png');
+        this.load.image('Snowball', 'craftpix-871511-free-jumping-up-game-items/PNG/Props/Prop_5.png');
         this.load.image('Jump', 'craftpix-871511-free-jumping-up-game-items/PNG/Bonus_Items/Jump_Bonus_02.png');
+        this.load.image('Jump2', 'craftpix-871511-free-jumping-up-game-items/PNG/Bonus_Items/Jump_Bonus_03.png');
+
 
         // Pad
         this.load.image('Pad', 'craftpix-871511-free-jumping-up-game-items/PNG/Pads/Pad_02_1.png');
         this.load.image('Sharp_Pad', 'craftpix-871511-free-jumping-up-game-items/PNG/Pads/Pad_02_2.png');
+        this.load.image('SnowPad', 'craftpix-871511-free-jumping-up-game-items/PNG/Pads/Pad_03_1.png');
+        this.load.image('Sharp_SnowPad', 'craftpix-871511-free-jumping-up-game-items/PNG/Pads/Pad_03_2.png');
 
         //Falling Down assets
         this.load.image('Falling_Down', 'Jumping_boy_sprites_v102/Transparent PNG/Jump/Jump-fall.png');
@@ -175,6 +184,13 @@ class Start extends Menu{
 
         // Background assets
         this.load.image('Background', 'craftpix-809414-cartoon-vertical-game-backgrounds/png/1.png');
+        this.load.image('Background2', 'craftpix-809414-cartoon-vertical-game-backgrounds/png/2.png');
+
+        // Level Select Image
+        this.load.image('LevelSelect', 'craftpix-103151-island-game-gui/Island-game-gui/png/frames/level select.png')
+        this.load.image('LevelSelectHeadlines', 'craftpix-103151-island-game-gui/Island-game-gui/png/headlines/level select.png')
+
+
     }
 
     DisplayLoadingMessege(){
@@ -193,7 +209,7 @@ class Start extends Menu{
         this.createStartButton(180,350);
         background.setScrollFactor(0);
     }
-}
+};
 
 class Score extends Menu{
     constructor(){
@@ -202,32 +218,116 @@ class Score extends Menu{
 
     create(){
     	cursors = this.input.keyboard.createCursorKeys();
-        //  A simple background for our game
+        //  A simple background for our 
         var background = this.add.image(180, 300, 'Background').setScale(0.35);
-        var Logo = this.add.image(180, 200, 'Logo').setScale(0.5);
-        var final_score = score*10-time;
-        if(final_score < 0) final_score = 0;
-        scoreText = this.add.bitmapText(180, 260, 'myfont',final_score ,36);
-        scoreText.setOrigin(0.5);
-	    this.createStartButton(180, 375);
-        this.createStars();
+        var Logo = this.add.image(180, 175, 'Logo').setScale(0.5);
+        var level_select = this.add.image(180, 325, 'LevelSelect').setScale(0.075);
+        var level_select_headlines = this.add.image(180, 235, 'LevelSelectHeadlines').setScale(0.05);
+        this.createLevelButton(1, 100, 300,0.075);
+        this.createLevelButton(2, 175, 300,0.075);    
 	    score = 0;
         background.setScrollFactor(0);
-    }
+    };
 
-    createStars(){
+    createLevelButton(level, x,y,scale){
+        var Button = this.add.image(x, y, 'ButtonRound').setScale(scale);
+        var self = this;
+        var levelText = this.add.bitmapText(x-10, y-10, 'myfont',level ,240).setScale(scale);
+
+        Button
+        .setInteractive({useHandCursor: true})
+        .on('pointerover', () => {Button.setTexture('ButtonRound_hover').setScale(scale);})
+        .on('pointerout', () => {Button.setTexture('ButtonRound').setScale(scale)})
+        .on('pointerdown', () => { Button.setTexture('ButtonRound_click').setScale(scale)})
+        .on('pointerup', () => {
+            this.scene.bringToTop('Level'+level);
+            this.scene.start('Level'+level);
+        });
+        this.tweens
+        .add({
+            targets: [Button,levelText],
+            scale:0.08,
+            duration: 500,
+            ease: 'Power2',
+            repeat: -1,
+            yoyo:true
+        }, this);
+        this.createStars(level,x,y,0.1);
+    };
+
+    createStars(level,x,y,scale){
         // Maximum score of 50 is allowed
-        if (score < 35) this.add.image(180,300,'Score0').setScale(0.25);
-	    else if (score < 40) this.add.image(180,300,'Score1').setScale(0.25);
-	    else if (score < 45) this.add.image(180,300,'Score2').setScale(0.25);
-	    else this.add.image(180,300,'Score').setScale(0.25);
+        scoreText = this.add.bitmapText(x-10, y+35, 'myfont',scores[level] ,150).setScale(scale);
+        scoreText.setOrigin(0.5);
+        if (scores[level] < 150) this.add.image(x,y+70,'Score0').setScale(scale);
+	    else if (scores[level] < 225) this.add.image(x,y+70,'Score1').setScale(scale);
+	    else if (scores[level] < 300) this.add.image(x,y+70, 'Score2').setScale(scale);
+	    else this.add.image(x,y+70, 'Score').setScale(scale);
     }
-}
+};
 
-class Play extends Phaser.Scene{
-    constructor(){
-        super({ key:'Play', active:false});
-    }
+class Level extends Phaser.Scene{
+
+    updateCompleteBar(){
+        mini_tarzen.setX(-tarzan.y/20000*120 + 135);
+    };
+
+    createMovingPads(p){
+        // Some pads to collect, 10 in total
+        moving_pads = this.physics.add.group({
+        allowGravity:false,
+        immovable:true,
+        enableBody:true
+        });
+
+        for (var i = 1; i < path.length; i=i+2)
+        {
+            var pad = moving_pads.create(path[i].x,path[i].y+50, p).setScale(0.1);
+            pad.body.checkCollision.down = false;
+            pad.body.checkCollision.left = false;
+            pad.body.checkCollision.right = false;
+            pad.body.friction.x = 1;
+            pad.setVelocityX(50);
+        }
+    };
+
+    createStaticPads(pad, sharp_pad){
+        // Some pads to collect, 10 in total
+        pads = this.physics.add.group({
+        allowGravity:false,
+        immovable:true,
+        enableBody:true
+        });
+
+        for (var i = 0; i < path.length; i=i+2)
+        {
+            var padl = pads.create(path[i].x,path[i].y+50, pad).setScale(0.1);
+            padl.body.checkCollision.down = false;
+            padl.body.checkCollision.left = false;
+            padl.body.checkCollision.right = false;
+            padl.body.friction.x = 1;
+            
+            if(path[i].x < 150){
+                var padr = pads.create(Phaser.Math.Between(path[i].x + 150, 250),path[i].y+50, sharp_pad).setScale(0.1);
+                padr.body.checkCollision.down = false;
+                padr.body.checkCollision.left = false;
+                padr.body.checkCollision.right = false;
+                padr.body.friction.x = 0.5;
+            }
+            else{
+                var padr = pads.create(Phaser.Math.Between(50, path[i].x-150),path[i].y+50, sharp_pad).setScale(0.1);
+                padr.body.checkCollision.down = false;
+                padr.body.checkCollision.left = false;
+                padr.body.checkCollision.right = false;
+                padr.body.friction.x = 0.5;         
+            }
+        }
+    };
+
+    createCamera(){
+        this.cameras.main.setBounds(0,-20000, 300, 20600);
+        this.cameras.main.startFollow(tarzan,1,1, 100,100);
+    };
 
     startClock(){
         this.clearClock();
@@ -235,62 +335,16 @@ class Play extends Phaser.Scene{
         clock = setInterval(function(){
             time++;
         }, 1000);
-
     };
 
     clearClock(){
         clearInterval(clock);
     };
 
-    create(){
-        //  Input Events
-        cursors = this.input.keyboard.createCursorKeys();
-
-        coin = this.sound.add('Coin',{loop:false});
-        jump = this.sound.add('Jump',{loop:false});
-        game_over = this.sound.add('GameOver',{loop:false});
-
-        this.createPath();
-        this.createBackground();
-        this.createStaticGrassyPads();
-	    this.createMovingGrassyPads();
-        this.createBananas();
-        this.createBirds();
-        this.createBonuses();
-        this.createTarzen();
-        this.createScore();
-	    this.createCamera();
-		this.createVolume(320,570,0.05);
-        this.createCompleteBar();
-        this.createTime();
-
-        // Declare Collision and OVerlaps
-        this.physics.add.collider(tarzan, pads, this.touchPad.bind(this));
-        this.physics.add.collider(tarzan, moving_pads, this.touchPad.bind(this));
-        this.physics.add.overlap(tarzan, bananas, this.collideBanana.bind(this));
-        this.physics.add.overlap(tarzan, bonus, this.powerOverlap);
-        this.physics.add.collider(tarzan, birds, this.jumpOnBird.bind(this));
-    };
-
-    update(){
-        this.updateTarzen();
-	    this.updateBirds();
-        this.updateMovingGrassyPads();
-	    this.updateBackground();
-        this.updateCompleteBar();
-        this.updateTime();
-    };
-    
-    createCamera(){
-        this.cameras.main.setBounds(0,-20000, 300, 20600);
-        this.cameras.main.startFollow(tarzan,1,1, 100,100);
-    };
-
-    createPath(){
-        for (var i = 0; i < 200; i=i+1)
-        {
-            path[i]= {x: Phaser.Math.Between(50, 250), y:(475-i*100)};
-        }
+    createTotalScore(level){
+        var final_score = score*10-time;
+        if(final_score < 0) final_score = 0;
+        if (final_score > scores[level]) scores[level] = final_score;
     };
 
     createTime(){
@@ -319,158 +373,34 @@ class Play extends Phaser.Scene{
         mini_tarzen.setScale(0.050,0.050)﻿;
     };
 
-    createStaticGrassyPads(){
-        // Some pads to collect, 10 in total
-        pads = this.physics.add.group({
-	    allowGravity:false,
-	    immovable:true,
-	    enableBody:true
-        });
-
-        for (var i = 0; i < path.length; i=i+2)
-        {
-	        var padl = pads.create(path[i].x,path[i].y+50, 'Pad').setScale(0.1);
-			padl.body.checkCollision.down = false;
-    	    padl.body.checkCollision.left = false;
-    	    padl.body.checkCollision.right = false;
-            padl.body.friction.x = 1;
-			
-			if(path[i].x < 150){
-			    var padr = pads.create(Phaser.Math.Between(path[i].x + 150, 250),path[i].y+50, 'Sharp_Pad').setScale(0.1);
-			    padr.body.checkCollision.down = false;
-    	        padr.body.checkCollision.left = false;
-    	        padr.body.checkCollision.right = false;
-                padr.body.friction.x = 0.5;
-			}
-			else{
-			    var padr = pads.create(Phaser.Math.Between(50, path[i].x-150),path[i].y+50, 'Sharp_Pad').setScale(0.1);
-			    padr.body.checkCollision.down = false;
-    	        padr.body.checkCollision.left = false;
-    	        padr.body.checkCollision.right = false;
-                padr.body.friction.x = 0.5;			
-			}
-		
-        }
-    };
-
-    createMovingGrassyPads(){
-        // Some pads to collect, 10 in total
-        moving_pads = this.physics.add.group({
-	    allowGravity:false,
-	    immovable:true,
-	    enableBody:true
-        });
-
-        for (var i = 1; i < path.length; i=i+2)
-        {
-	        var pad = moving_pads.create(path[i].x,path[i].y+50, 'Pad').setScale(0.1);
- 	        pad.body.checkCollision.down = false;
-    	    pad.body.checkCollision.left = false;
-    	    pad.body.checkCollision.right = false;
-            pad.body.friction.x = 1;
-	        pad.setVelocityX(50);
-        }
-    };
-	
     createVolume(x,y,scale){
-	    var Button = this.add.image(x, y, 'ButtonVolume').setScale(scale);
+        var Button = this.add.image(x, y, 'ButtonVolume').setScale(scale);
         var self = this;
-		Button.setTexture('ButtonVolume_lock').setScale(scale);
-	    Button
+        Button.setTexture('ButtonVolume_lock').setScale(scale);
+        Button
         .setInteractive({useHandCursor: true})
         .on('pointerover', () => {Button.setTexture('ButtonVolume_hover').setScale(scale);})
         .on('pointerout', () => {
-		    if (volume == 1){ 
-				Button.setTexture('ButtonVolume').setScale(scale);
-			}
+            if (volume == 1){ 
+                Button.setTexture('ButtonVolume').setScale(scale);
+            }
             else if (volume == 0){
-			    Button.setTexture('ButtonVolume_lock').setScale(scale);
-			}
-		})
+                Button.setTexture('ButtonVolume_lock').setScale(scale);
+            }
+        })
         .on('pointerdown', () => { 
-		Button.setTexture('ButtonVolume_click').setScale(scale)
-			if (volume == 1){ 
-				volume = 0;
-			}
-			else if (volume == 0){ 
-				volume = 1;
-			}
-		});
-		Button.setScrollFactor(0);
-
+        Button.setTexture('ButtonVolume_click').setScale(scale)
+            if (volume == 1){ 
+                volume = 0;
+            }
+            else if (volume == 0){ 
+                volume = 1;
+            }
+        });
+        Button.setScrollFactor(0);
     };
-	
-    createBirds(){
-        this.anims.create({
-            key: 'bird_flying',
-            frames: [
-                { key: 'Bird_0', frame: null },
-                { key: 'Bird_1', frame: null },
-                { key: 'Bird_2', frame: null },
-                { key: 'Bird_3', frame: null }
-            ],
-            frameRate: 10,
-            repeat: -1
-        });
 
-        // Some pads to collect, 10 in total
-        birds = this.physics.add.group({
-	    allowGravity:false,
-	    immovable:true,
-	    enableBody:true
-        });
-
-
-        for (var i = 0; i < path.length; i=i+1)
-        {
-	    if((i+2)%20 == 0) {
-		var bird = birds.create(path[i].x,path[i].y+100, 'Bird_0').setScale(0.05);
-		bird.anims.play('bird_flying', true);
-		bird.setVelocityX(50);
-            }
-        }
-    }
-
-    createBananas(){
-        //  Some bananas to collect, 10 in total
-        bananas = this.physics.add.group({allowGravity:false,immovable:true,enableBody:true});
-        for (var i = 0; i < path.length; i=i+1)
-        {
-	    if(i%4 ==0){ 
-                var banana = bananas.create(path[i].x,path[i].y, 'Banana').setScale(0.05);
-            }
-            this.tweens
-            .add({
-                targets: banana,
-                scale:0.1,
-                duration: 1000,
-                ease: 'Power2',
-                repeat:-1,
-                yoyo:true
-            }, this);
-        }
-    }
-
-    createScore(){
-        //  The score
-        var banana = this.add.image(25, 25, 'Banana').setScale(0.1);
-        banana.setScrollFactor(0);
-        scoreText = this.add.bitmapText(50, 10, 'myfont', score,24 ); 
-        scoreText.setScrollFactor(0);
-    }
-
-    createBonuses(){
-        //  Some bonus to collect, 10 in total
-        bonus = this.physics.add.group({allowGravity:false,immovable:true,enableBody:true});
-        for (var i = 0; i < path.length; i=i+1)
-        {
-            if((i+6)%20 == 0) var jump = bonus.create(path[i].x,path[i].y, 'Jump').setScale(0.1); 
-
-        }
-    }
-
-    createTarzen(){
-        // Create Tarzan
+    createTarzen(){// Create Tarzan
         this.anims.create({
             key: 'falling_down',
             frames: [
@@ -514,102 +444,81 @@ class Play extends Phaser.Scene{
         tarzan.setScale(0.075,0.075)﻿;
         tarzan.setVelocityY(-750);
         tarzan.body.friction.x = 1;
-    }
+    };
 
-    createBackground(){
-        //  A simple background for our game
-        background = this.add.image(180, 300, 'Background').setScale(0.70);
-        background.setScrollFactor(0);
-    }
+    createBirds(){
+        this.anims.create({
+            key: 'bird_flying',
+            frames: [
+                { key: 'Bird_0', frame: null },
+                { key: 'Bird_1', frame: null },
+                { key: 'Bird_2', frame: null },
+                { key: 'Bird_3', frame: null }
+            ],
+            frameRate: 10,
+            repeat: -1
+        });
 
-    updateBackground(){
-	    background.setPosition((360-((180*tarzan.x)/180)), (50-((300*tarzan.y)/10000)));
-    }
+        // Some pads to collect, 10 in total
+        birds = this.physics.add.group({
+            allowGravity:false,
+            immovable:true,
+            enableBody:true
+        });
 
 
-    flipLeft(object,speed){
-        object.setVelocityX(-1*speed);
-        object.setFlipX(true);
-    }
-
-    flipRight(object,speed){  
-        object.setVelocityX(speed);
-        object.setFlipX(false);
-    }
-
-    updateTarzen(){
-        if ((cursors.up.isDown) && (tarzan.body.touching.down)) this.jumpPad(tarzan,current_pad);
-		
-		if ((tarzan.body.touching.down) && (current_pad.body.friction.x == 0.5)){
-            this.gameOver();
-		}
-
-        if(tarzan.body.velocity.y > 750){
-            this.gameOver();
-        }
-
-        if (cursors.right.isDown){ 
-            this.flipRight(tarzan,100);
-	        if (tarzan.body.touching.down){
-                tarzan.anims.play('walk', true);
+        for (var i = 0; i < path.length; i=i+1)
+        {
+        if((i+2)%20 == 0) {
+        var bird = birds.create(path[i].x,path[i].y+100, 'Bird_0').setScale(0.05);
+        bird.anims.play('bird_flying', true);
+        bird.setVelocityX(50);
             }
         }
+    };
 
-        else if (cursors.left.isDown) {
-            this.flipLeft(tarzan,100);
-	        if (tarzan.body.touching.down){
-                tarzan.anims.play('walk', true);
-            }
+    createPath(){
+        for (var i = 0; i < 200; i=i+1)
+        {
+            path[i]= {x: Phaser.Math.Between(50, 250), y:(475-i*100)};
         }
+    };
 
-        else tarzan.setVelocityX(0);
-
-        if (tarzan.x > 330) this.flipLeft(tarzan,200);
-        else if (tarzan.x < 30) this.flipRight(tarzan,200);
-
-        if (tarzan.body.velocity.y < 0) tarzan.anims.play('falling_down', true);
-        if (tarzan.body.velocity.y > 0) tarzan.anims.play('jump_up', true);
-        if ((tarzan.body.velocity.y == 0) && (tarzan.body.velocity.x == 0))tarzan.anims.play('idle', true);
-    }
-
-    updateBirds(){
-        birds.children.each(function(bird) {  
-            if (bird.x > 330) this.flipLeft(bird, 50);
-            else if (bird.x < 30) this.flipRight(bird,50);
-        }, this);
-    }
-
-    updateCompleteBar(){
-        mini_tarzen.setX(-tarzan.y/20000*120 + 135);
-    }
-
-    updateMovingGrassyPads(){
-        moving_pads.children.each(function(moving_pad) {  
-            if (moving_pad.x > 300) this.flipLeft(moving_pad, 50);
-            else if (moving_pad.x < 50) this.flipRight(moving_pad,50);
-        }, this);
-    }
-
-    touchPad(tarzen,pad){
-	    current_pad = pad;
-    }
-
-    jumpPad(tarzan,pad){
-        if ((tarzan.body.touching.down) && (pad.body.touching.up)){
+    createObjects(obj){
+        //  Some objects to collect, 10 in total
+        objects = this.physics.add.group({allowGravity:false,immovable:true,enableBody:true});
+        for (var i = 0; i < path.length; i=i+1)
+        {
+        if(i%4 ==0){ 
+                var object = objects.create(path[i].x,path[i].y, obj).setScale(0.05);
+            }
             this.tweens
             .add({
-                targets: pad,
-                alpha: 0,
-                duration: 5000,
+                targets: object,
+                scale:0.1,
+                duration: 1000,
                 ease: 'Power2',
-	        onComplete:function(){
-                    pad.disableBody(true, true);
-	           }
+                repeat:-1,
+                yoyo:true
             }, this);
-            pad.setAccelerationY(500);
-            tarzan.setVelocityY(-500);
         }
-    }
+    };
+
+    gameOver(){
+        if(volume != 0) game_over.play();
+        this.scene.bringToTop('Score');
+        this.scene.start('Score');
+    };
+
+    createBg(bg){
+        //  A simple background for our game
+        background = this.add.image(180, 300, bg).setScale(0.70);
+        background.setScrollFactor(0);
+    };
+
+    updateBackground(){
+        background.setPosition((360-((180*tarzan.x)/180)), (50-((300*tarzan.y)/10000)));
+    };
 
     jumpOnBird(tarzan,bird){
         if ((tarzan.body.touching.down) && (bird.body.touching.up)){
@@ -620,27 +529,184 @@ class Play extends Phaser.Scene{
                 alpha: 0,
                 duration: 500,
                 ease: 'Power2',
-	        onComplete:function(){
+                onComplete:function(){
                     bird.disableBody(true, true);
-	        }
+                }
             }, this);
             bird.setAccelerationY(500);
             tarzan.setVelocityY(-1000);
         }
-	   else{
+       else{
             this.gameOver();
-	   }
-    }
+       }
+    };
+
+    touchPad(tarzen,pad){
+        current_pad = pad;
+    };
+
+    jumpPad(tarzan,pad){
+        if ((tarzan.body.touching.down) && (pad.body.touching.up)){
+            this.tweens
+            .add({
+                targets: pad,
+                alpha: 0,
+                duration: 5000,
+                ease: 'Power2',
+                onComplete:function(){
+                    pad.disableBody(true, true);
+                }
+            }, this);
+            pad.setAccelerationY(500);
+            tarzan.setVelocityY(-500);
+        }
+    };
 
     powerOverlap(tarzan, Bonus){
-	    if(volume == 1) jump.play();
+        if(volume == 1) jump.play();
         Bonus.disableBody(true, true);
         tarzan.setVelocityY(-1000);
-    }
+    };
 
+    createSc(name){
+        //  The score
+        var banana = this.add.image(25, 25, name).setScale(0.1);
+        banana.setScrollFactor(0);
+        scoreText = this.add.bitmapText(50, 10, 'myfont', score,24 ); 
+        scoreText.setScrollFactor(0);
+    };
+
+    flipLeft(object,speed){
+        object.setVelocityX(-1*speed);
+        object.setFlipX(true);
+    };
+
+    flipRight(object,speed){  
+        object.setVelocityX(speed);
+        object.setFlipX(false);
+    };
+
+    updateBirds(){
+        birds.children.each(function(bird) {  
+            if (bird.x > 330) this.flipLeft(bird, 50);
+            else if (bird.x < 30) this.flipRight(bird,50);
+        }, this);
+    };
+}
+
+class Level1 extends Level{
+    constructor(){
+        super({ key:'Level1', active:false});
+    };
+
+    create(){
+        //  Input Events
+        cursors = this.input.keyboard.createCursorKeys();
+
+        coin = this.sound.add('Coin',{loop:false});
+        jump = this.sound.add('Jump',{loop:false});
+        game_over = this.sound.add('GameOver',{loop:false});
+
+        this.createPath();
+        this.createBackground();
+        this.createStaticGrassyPads();
+	    this.createMovingGrassyPads();
+        this.createBananas();
+        this.createBirds();
+        this.createBonuses();
+        this.createTarzen();
+        this.createScore();
+	    this.createCamera();
+		this.createVolume(320,570,0.05);
+        this.createCompleteBar();
+        this.createTime();
+
+        // Declare Collision and OVerlaps
+        this.physics.add.collider(tarzan, pads, this.touchPad.bind(this));
+        this.physics.add.collider(tarzan, moving_pads, this.touchPad.bind(this));
+        this.physics.add.overlap(tarzan, objects, this.collideBanana.bind(this));
+        this.physics.add.overlap(tarzan, bonus, this.powerOverlap);
+        this.physics.add.collider(tarzan, birds, this.jumpOnBird.bind(this));
+    };
+
+    update(){
+        this.updateTarzen();
+	    this.updateBirds();
+        this.updateMovingGrassyPads();
+	    this.updateBackground();
+        this.updateCompleteBar();
+        this.updateTime();
+    };
+
+    createStaticGrassyPads(){
+        this.createStaticPads('Pad','Sharp_Pad');
+    };
+
+    createMovingGrassyPads(){
+        this.createMovingPads('Pad');
+    };
+
+    createBananas(){
+        this.createObjects('Banana');
+    };
+
+    createScore(){
+        //  The score
+        this.createSc('Banana');
+    };
+
+    createBonuses(){
+        //  Some bonus to collect, 10 in total
+        bonus = this.physics.add.group({
+            allowGravity:false,
+            immovable:true,
+            enableBody:true
+        });
+
+        for (var i = 0; i < path.length; i=i+1){
+            if((i+6)%20 == 0) var jump = bonus.create(path[i].x,path[i].y, 'Jump').setScale(0.1); 
+        }
+    };
+
+    createBackground(){
+        this.createBg('Background');
+    };
+
+    updateTarzen(){
+        if ((cursors.up.isDown) && (tarzan.body.touching.down)) this.jumpPad(tarzan,current_pad);
+		if ((tarzan.body.touching.down) && (current_pad.body.friction.x == 0.5)) this.gameOver();
+        if(tarzan.body.velocity.y > 750) this.gameOver();
+        if (cursors.right.isDown){ 
+            this.flipRight(tarzan,100);
+	        if (tarzan.body.touching.down){
+                tarzan.anims.play('walk', true);
+            }
+        }
+        else if (cursors.left.isDown) {
+            this.flipLeft(tarzan,100);
+	        if (tarzan.body.touching.down){
+                tarzan.anims.play('walk', true);
+            }
+        }
+        else tarzan.setVelocityX(0);
+
+        if (tarzan.x > 330) this.flipLeft(tarzan,200);
+        else if (tarzan.x < 30) this.flipRight(tarzan,200);
+        if (tarzan.body.velocity.y < 0) tarzan.anims.play('falling_down', true);
+        if (tarzan.body.velocity.y > 0) tarzan.anims.play('jump_up', true);
+        if ((tarzan.body.velocity.y == 0) && (tarzan.body.velocity.x == 0))tarzan.anims.play('idle', true);
+    };
+
+
+    updateMovingGrassyPads(){
+        moving_pads.children.each(function(moving_pad) {  
+            if (moving_pad.x > 300) this.flipLeft(moving_pad, 50);
+            else if (moving_pad.x < 50) this.flipRight(moving_pad,50);
+        }, this);
+    };
 
     collideBanana(tarzan, banana){
-	var self = this;
+	    var self = this;
         if(!banana.hasOverlapped){
             banana.hasOverlapped = true;
             self.tweens
@@ -670,18 +736,175 @@ class Play extends Phaser.Scene{
                     }, self);
 		            score++;
                     scoreText.setText(score);
+                    self.createTotalScore(1);
 	            }
             }, self);
         }
-    }
+    };
+};
 
-    gameOver(){
-        if(volume != 0) game_over.play();
-        this.scene.bringToTop('Score');
-        this.scene.start('Score');
-    }
+class Level2 extends Level{
+    constructor(){
+        super({ key:'Level2', active:false});
+    };
+
+    create(){
+        //  Input Events
+        cursors = this.input.keyboard.createCursorKeys();
+
+        coin = this.sound.add('Coin',{loop:false});
+        jump = this.sound.add('Jump',{loop:false});
+        game_over = this.sound.add('GameOver',{loop:false});
+
+        this.createPath();
+        this.createBackground();
+        this.createStaticSnowPads();
+        this.createMovingSnowPads();
+        this.createSnowballs();
+        this.createBirds();
+        this.createBonuses();
+        this.createTarzen();
+        this.createScore();
+        this.createCamera();
+        this.createVolume(320,570,0.05);
+        this.createCompleteBar();
+        this.createTime();
+
+        // Declare Collision and OVerlaps
+        this.physics.add.collider(tarzan, pads, this.touchPad.bind(this));
+        this.physics.add.collider(tarzan, moving_pads, this.touchPad.bind(this));
+        this.physics.add.overlap(tarzan, objects, this.collideBanana.bind(this));
+        this.physics.add.overlap(tarzan, bonus, this.powerOverlap);
+        this.physics.add.collider(tarzan, birds, this.jumpOnBird.bind(this));
+    };
+
+    update(){
+        this.updateTarzen();
+        this.updateBirds();
+        this.updateMovingSnowPads();
+        this.updateBackground();
+        this.updateCompleteBar();
+        this.updateTime();
+    };
+
+    createStaticSnowPads(){
+        this.createStaticPads('SnowPad','Sharp_SnowPad');
+    };
+
+    createMovingSnowPads(){
+        this.createMovingPads('SnowPad');
+    };
+    
+    createSnowballs(){
+        this.createObjects('Snowball');
+    };
+
+    createScore(){
+        this.createSc('Snowball');
+    };
+
+    createBonuses(){
+        //  Some bonus to collect, 10 in total
+        bonus = this.physics.add.group({
+            allowGravity:false,
+            immovable:true,
+            enableBody:true
+        });
+
+        for (var i = 0; i < path.length; i=i+1){
+            if((i+6)%20 == 0) var jump = bonus.create(path[i].x,path[i].y, 'Jump2').setScale(0.1);
+        }
+    };
+
+    createBackground(){
+        this.createBg('Background2');
+    };
+
+    updateTarzen(){
+        if ((cursors.up.isDown) && (tarzan.body.touching.down)) this.jumpPad(tarzan,current_pad);
+        
+        if ((tarzan.body.touching.down) && (current_pad.body.friction.x == 0.5)){
+            this.gameOver();
+        }
+
+        if (tarzan.body.touching.down){
+            if (current_pad.body.velocity.x > 0) tarzan.setAccelerationX(-2500);
+            else tarzan.setAccelerationX(2500);
+        }
+        else tarzan.setAccelerationX(0);
+
+        if(tarzan.body.velocity.y > 750){
+            this.gameOver();
+        }
+
+        if (cursors.right.isDown){ 
+            this.flipRight(tarzan,100);
+            if (tarzan.body.touching.down){
+                tarzan.anims.play('walk', true);
+            }
+        }
+
+        else if (cursors.left.isDown) {
+            this.flipLeft(tarzan,100);
+            if (tarzan.body.touching.down){
+                tarzan.anims.play('walk', true);
+            }
+        }
+
+        else tarzan.setVelocityX(0);
+
+        if (tarzan.x > 330) this.flipLeft(tarzan,200);
+        else if (tarzan.x < 30) this.flipRight(tarzan,200);
+
+        if (tarzan.body.velocity.y < 0) tarzan.anims.play('falling_down', true);
+        if (tarzan.body.velocity.y > 0) tarzan.anims.play('jump_up', true);
+        if ((tarzan.body.velocity.y == 0) && (tarzan.body.velocity.x == 0))tarzan.anims.play('idle', true);
+    };
+
+    updateMovingSnowPads(){
+        moving_pads.children.each(function(moving_pad) {  
+            if (moving_pad.x > 300) this.flipLeft(moving_pad, 50);
+            else if (moving_pad.x < 50) this.flipRight(moving_pad,50);
+        }, this);
+    };
+
+    collideBanana(tarzan, banana){
+    var self = this;
+        if(!banana.hasOverlapped){
+            banana.hasOverlapped = true;
+            self.tweens
+            .add({
+                targets: banana,
+                alpha: 0,
+                scale:0,
+                duration: 250,
+                ease: 'Power2',
+                onComplete:function(){
+                    if (volume == 1) coin.play();
+                    // Declare tarzan
+                    var point = self.physics.add.sprite(tarzan.x, tarzan.y-100, 'Point');
+                    point.setScale(0.25,0.25)﻿;
+                    banana.disableBody(true, true);
+                    point.setVelocityY(-350);
+                    self.tweens
+                    .add({
+                        targets: point,
+                        alpha: 0,
+                        scale:1,
+                        duration:1000,
+                        ease:'Power2',
+                        onComplete:function(){
+                            point.disableBody(true,true);
+                        }
+                    }, self);
+                    score++;
+                    scoreText.setText(score);
+                    self.createTotalScore(2);
+                }
+            }, self);
+        }
+    };
 }
-
 
 var config = {
     type: Phaser.AUTO,
@@ -694,7 +917,7 @@ var config = {
             debug: false
         }
     },
-    scene: [Start, Play, Score]
+    scene: [Start, Level1, Level2, Score]
 };
 
 var game = new Phaser.Game(config);
