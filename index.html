@@ -557,7 +557,7 @@ class Level extends Phaser.Scene{
     };
 
     touchPad(tarzen,pad){
-        current_pad = pad;
+        if((boy.body.touching.down) && (pad.body.touching.up)) current_pad = pad;
     };
 
     jumpPad(tarzan,pad){
@@ -615,7 +615,7 @@ class Level extends Phaser.Scene{
         }, this);
     };
 
-    createB(jump){
+    createB(j){
         //  Some bonus to collect, 10 in total
         bonus = this.physics.add.group({
             allowGravity:false,
@@ -624,7 +624,7 @@ class Level extends Phaser.Scene{
         });
 
         for (var i = 0; i < path.length; i=i+1){
-            if((i+6)%20 == 0) var jump = bonus.create(path[i].x,path[i].y, jump).setScale(0.1);
+            if((i+6)%20 == 0) var jump = bonus.create(path[i].x,path[i].y, j).setScale(0.1);
         }
     };
 }
@@ -715,7 +715,6 @@ class Level1 extends Level{
             }
         }
         else boy.setVelocityX(0);
-
         if (boy.x > 330) this.flipLeft(boy,200);
         else if (boy.x < 30) this.flipRight(boy,200);
         if (boy.body.velocity.y < 0) boy.anims.play('falling_down', true);
@@ -755,7 +754,7 @@ class Level1 extends Level{
                     self.createTotalScore(1);
 	            }
             }, self);
-        }
+        };
     };
 };
 
@@ -868,15 +867,8 @@ class Level2 extends Level{
         if ((boy.body.velocity.y == 0) && (boy.body.velocity.x == 0))boy.anims.play('idle', true);
     };
 
-    updateMovingPads(){
-        moving_pads.children.each(function(moving_pad) {  
-            if (moving_pad.x > 300) this.flipLeft(moving_pad, 50);
-            else if (moving_pad.x < 50) this.flipRight(moving_pad,50);
-        }, this);
-    };
-
     collideBanana(boy, banana){
-    var self = this;
+        var self = this;
         if(!banana.hasOverlapped){
             banana.hasOverlapped = true;
             self.tweens
