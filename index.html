@@ -607,6 +607,26 @@ class Level extends Phaser.Scene{
             else if (bird.x < 30) this.flipRight(bird,50);
         }, this);
     };
+
+    updateMovingPads(){
+        moving_pads.children.each(function(moving_pad) {  
+            if (moving_pad.x > 300) this.flipLeft(moving_pad, 50);
+            else if (moving_pad.x < 50) this.flipRight(moving_pad,50);
+        }, this);
+    };
+
+    createB(jump){
+        //  Some bonus to collect, 10 in total
+        bonus = this.physics.add.group({
+            allowGravity:false,
+            immovable:true,
+            enableBody:true
+        });
+
+        for (var i = 0; i < path.length; i=i+1){
+            if((i+6)%20 == 0) var jump = bonus.create(path[i].x,path[i].y, jump).setScale(0.1);
+        }
+    };
 }
 
 class Level1 extends Level{
@@ -647,7 +667,7 @@ class Level1 extends Level{
     update(){
         this.updateTarzen();
 	    this.updateBirds();
-        this.updateMovingGrassyPads();
+        this.updateMovingPads();
 	    this.updateBackground();
         this.updateCompleteBar();
         this.updateTime();
@@ -671,16 +691,7 @@ class Level1 extends Level{
     };
 
     createBonuses(){
-        //  Some bonus to collect, 10 in total
-        bonus = this.physics.add.group({
-            allowGravity:false,
-            immovable:true,
-            enableBody:true
-        });
-
-        for (var i = 0; i < path.length; i=i+1){
-            if((i+6)%20 == 0) var jump = bonus.create(path[i].x,path[i].y, 'Jump').setScale(0.1); 
-        }
+        this.createB('Jump');
     };
 
     createBackground(){
@@ -710,14 +721,6 @@ class Level1 extends Level{
         if (boy.body.velocity.y < 0) boy.anims.play('falling_down', true);
         if (boy.body.velocity.y > 0) boy.anims.play('jump_up', true);
         if ((boy.body.velocity.y == 0) && (boy.body.velocity.x == 0))boy.anims.play('idle', true);
-    };
-
-
-    updateMovingGrassyPads(){
-        moving_pads.children.each(function(moving_pad) {  
-            if (moving_pad.x > 300) this.flipLeft(moving_pad, 50);
-            else if (moving_pad.x < 50) this.flipRight(moving_pad,50);
-        }, this);
     };
 
     collideBanana(boy, banana){
@@ -794,7 +797,7 @@ class Level2 extends Level{
     update(){
         this.updateTarzen();
         this.updateBirds();
-        this.updateMovingSnowPads();
+        this.updateMovingPads();
         this.updateBackground();
         this.updateCompleteBar();
         this.updateTime();
@@ -817,16 +820,7 @@ class Level2 extends Level{
     };
 
     createBonuses(){
-        //  Some bonus to collect, 10 in total
-        bonus = this.physics.add.group({
-            allowGravity:false,
-            immovable:true,
-            enableBody:true
-        });
-
-        for (var i = 0; i < path.length; i=i+1){
-            if((i+6)%20 == 0) var jump = bonus.create(path[i].x,path[i].y, 'Jump2').setScale(0.1);
-        }
+        this.createB('Jump2');
     };
 
     createBackground(){
@@ -874,7 +868,7 @@ class Level2 extends Level{
         if ((boy.body.velocity.y == 0) && (boy.body.velocity.x == 0))boy.anims.play('idle', true);
     };
 
-    updateMovingSnowPads(){
+    updateMovingPads(){
         moving_pads.children.each(function(moving_pad) {  
             if (moving_pad.x > 300) this.flipLeft(moving_pad, 50);
             else if (moving_pad.x < 50) this.flipRight(moving_pad,50);
@@ -956,7 +950,7 @@ class Level3 extends Level{
     update(){
         this.updateTarzen();
         this.updateBirds();
-        this.updateMovingSnowPads();
+        this.updateMovingPads();
         this.updateBackground();
         this.updateCompleteBar();
         this.updateTime();
@@ -979,16 +973,7 @@ class Level3 extends Level{
     };
 
     createBonuses(){
-        //  Some bonus to collect, 10 in total
-        bonus = this.physics.add.group({
-            allowGravity:false,
-            immovable:true,
-            enableBody:true
-        });
-
-        for (var i = 0; i < path.length; i=i+1){
-            if((i+6)%20 == 0) var jump = bonus.create(path[i].x,path[i].y, 'Jump3').setScale(0.1);
-        }
+        this.createB('Jump3');
     };
 
     createBackground(){
@@ -998,15 +983,11 @@ class Level3 extends Level{
     updateTarzen(){
         if ((cursors.up.isDown) && (boy.body.touching.down)) this.jumpPad(boy,current_pad);
         
-        if ((boy.body.touching.down) && (current_pad.body.friction.x == 0.5)){
-            this.gameOver();
-        }
+        if ((boy.body.touching.down) && (current_pad.body.friction.x == 0.5)) this.gameOver();
 
         else boy.setAccelerationX(0);
 
-        if(boy.body.velocity.y > 750){
-            this.gameOver();
-        }
+        if(boy.body.velocity.y > 750) this.gameOver();
 
         if (cursors.right.isDown){ 
             this.flipRight(boy,100);
@@ -1029,14 +1010,7 @@ class Level3 extends Level{
 
         if (boy.body.velocity.y < 0) boy.anims.play('falling_down', true);
         if (boy.body.velocity.y > 0) boy.anims.play('jump_up', true);
-        if ((boy.body.velocity.y == 0) && (boy.body.velocity.x == 0))boy.anims.play('idle', true);
-    };
-
-    updateMovingSnowPads(){
-        moving_pads.children.each(function(moving_pad) {  
-            if (moving_pad.x > 300) this.flipLeft(moving_pad, 50);
-            else if (moving_pad.x < 50) this.flipRight(moving_pad,50);
-        }, this);
+        if ((boy.body.velocity.y == 0) && (boy.body.velocity.x == 0)) boy.anims.play('idle', true);
     };
 
     touchPad(tarzen,pad){
@@ -1054,13 +1028,13 @@ class Level3 extends Level{
         }
     };
 
-    collideBanana(boy, banana){
+    collideBanana(boy, object){
     var self = this;
-        if(!banana.hasOverlapped){
-            banana.hasOverlapped = true;
+        if(!object.hasOverlapped){
+            object.hasOverlapped = true;
             self.tweens
             .add({
-                targets: banana,
+                targets: object,
                 alpha: 0,
                 scale:0,
                 duration: 250,
@@ -1070,15 +1044,15 @@ class Level3 extends Level{
                     // Declare tarzan
                     var point = self.physics.add.sprite(boy.x, boy.y-100, 'Point');
                     point.setScale(0.25,0.25)﻿;
-                    banana.disableBody(true, true);
+                    object.disableBody(true, true);
                     point.setVelocityY(-350);
                     self.tweens
                     .add({
-                        targets: point,
-                        alpha: 0,
-                        scale:1,
-                        duration:1000,
-                        ease:'Power2',
+                        targets : point,
+                        alpha : 0,
+                        scale : 1,
+                        duration : 1000,
+                        ease : 'Power2',
                         onComplete:function(){
                             point.disableBody(true,true);
                         }
