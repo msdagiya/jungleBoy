@@ -16,7 +16,7 @@
     <div style="width:360px; float:left;padding:0px 40px; box-sizing:border-box;display:block;"> 
         <a href="https://github.com/msdagiya"><img width="149" height="149" src="https://github.blog/wp-content/uploads/2008/12/forkme_left_red_aa0000.png?resize=149%2C149" class="attachment-full size-full" alt="Fork me on GitHub" data-recalc-dims="1"></a>
         <h1>Jungle Boy Game</h1>
-        <p>Use right and left keys to jump the tarzan on the static and movings pads. Collecting Items and Jumps, avoid bird and Jump on birds to get extra jump</p>
+        <p>Use right and left keys to jump the Boy on the static and movings pads. Collecting Items and Jumps, avoid bird and Jump on birds to get extra jump</p>
         <ul>
             <li> Level 1: Grassy Theme</li>
             <li> Level 2: Snowy Theme</li>
@@ -24,7 +24,7 @@
         </ul>
     </div>
 <script type="text/javascript">
-var tarzan;
+var boy;
 var background;
 var cursors;
 var fire;
@@ -282,7 +282,7 @@ class Score extends Menu{
 class Level extends Phaser.Scene{
 
     updateCompleteBar(){
-        mini_tarzen.setX(-tarzan.y/20000*120 + 135);
+        mini_tarzen.setX(-boy.y/20000*120 + 135);
     };
 
     createMovingPads(p){
@@ -339,7 +339,7 @@ class Level extends Phaser.Scene{
 
     createCamera(){
         this.cameras.main.setBounds(0,-20000, 300, 20600);
-        this.cameras.main.startFollow(tarzan,1,1, 100,100);
+        this.cameras.main.startFollow(boy,1,1, 100,100);
     };
 
     startClock(){
@@ -455,10 +455,10 @@ class Level extends Phaser.Scene{
         });
 
         // Declare tarzan
-        tarzan = this.physics.add.sprite(180, 450, 'Walk_001');
-        tarzan.setScale(0.075,0.075)﻿;
-        tarzan.setVelocityY(-750);
-        tarzan.body.friction.x = 1;
+        boy = this.physics.add.sprite(180, 450, 'Walk_001');
+        boy.setScale(0.075,0.075)﻿;
+        boy.setVelocityY(-750);
+        boy.body.friction.x = 1;
     };
 
     createBirds(){
@@ -532,11 +532,11 @@ class Level extends Phaser.Scene{
     };
 
     updateBackground(){
-        background.setPosition((360-((180*tarzan.x)/180)), (50-((300*tarzan.y)/10000)));
+        background.setPosition((360-((180*boy.x)/180)), (50-((300*boy.y)/10000)));
     };
 
     jumpOnBird(tarzan,bird){
-        if ((tarzan.body.touching.down) && (bird.body.touching.up)){
+        if ((boy.body.touching.down) && (bird.body.touching.up)){
             if (volume == 1) jump.play();
             this.tweens
             .add({
@@ -549,7 +549,7 @@ class Level extends Phaser.Scene{
                 }
             }, this);
             bird.setAccelerationY(500);
-            tarzan.setVelocityY(-1000);
+            boy.setVelocityY(-1000);
         }
        else{
             this.gameOver();
@@ -561,7 +561,7 @@ class Level extends Phaser.Scene{
     };
 
     jumpPad(tarzan,pad){
-        if ((tarzan.body.touching.down) && (pad.body.touching.up)){
+        if ((boy.body.touching.down) && (pad.body.touching.up)){
             this.tweens
             .add({
                 targets: pad,
@@ -573,14 +573,14 @@ class Level extends Phaser.Scene{
                 }
             }, this);
             pad.setAccelerationY(500);
-            tarzan.setVelocityY(-500);
+            boy.setVelocityY(-500);
         }
     };
 
     powerOverlap(tarzan, Bonus){
         if(volume == 1) jump.play();
         Bonus.disableBody(true, true);
-        tarzan.setVelocityY(-1000);
+        boy.setVelocityY(-1000);
     };
 
     createSc(name){
@@ -637,11 +637,11 @@ class Level1 extends Level{
         this.createTime();
 
         // Declare Collision and OVerlaps
-        this.physics.add.collider(tarzan, pads, this.touchPad.bind(this));
-        this.physics.add.collider(tarzan, moving_pads, this.touchPad.bind(this));
-        this.physics.add.overlap(tarzan, objects, this.collideBanana.bind(this));
-        this.physics.add.overlap(tarzan, bonus, this.powerOverlap);
-        this.physics.add.collider(tarzan, birds, this.jumpOnBird.bind(this));
+        this.physics.add.collider(boy, pads, this.touchPad.bind(this));
+        this.physics.add.collider(boy, moving_pads, this.touchPad.bind(this));
+        this.physics.add.overlap(boy, objects, this.collideBanana.bind(this));
+        this.physics.add.overlap(boy, bonus, this.powerOverlap);
+        this.physics.add.collider(boy, birds, this.jumpOnBird.bind(this));
     };
 
     update(){
@@ -688,28 +688,28 @@ class Level1 extends Level{
     };
 
     updateTarzen(){
-        if ((cursors.up.isDown) && (tarzan.body.touching.down)) this.jumpPad(tarzan,current_pad);
-		if ((tarzan.body.touching.down) && (current_pad.body.friction.x == 0.5)) this.gameOver();
-        if(tarzan.body.velocity.y > 750) this.gameOver();
+        if ((cursors.up.isDown) && (boy.body.touching.down)) this.jumpPad(boy,current_pad);
+		if ((boy.body.touching.down) && (current_pad.body.friction.x == 0.5)) this.gameOver();
+        if(boy.body.velocity.y > 750) this.gameOver();
         if (cursors.right.isDown){ 
-            this.flipRight(tarzan,100);
-	        if (tarzan.body.touching.down){
-                tarzan.anims.play('walk', true);
+            this.flipRight(boy,100);
+	        if (boy.body.touching.down){
+                boy.anims.play('walk', true);
             }
         }
         else if (cursors.left.isDown) {
-            this.flipLeft(tarzan,100);
-	        if (tarzan.body.touching.down){
-                tarzan.anims.play('walk', true);
+            this.flipLeft(boy,100);
+	        if (boy.body.touching.down){
+                boy.anims.play('walk', true);
             }
         }
-        else tarzan.setVelocityX(0);
+        else boy.setVelocityX(0);
 
-        if (tarzan.x > 330) this.flipLeft(tarzan,200);
-        else if (tarzan.x < 30) this.flipRight(tarzan,200);
-        if (tarzan.body.velocity.y < 0) tarzan.anims.play('falling_down', true);
-        if (tarzan.body.velocity.y > 0) tarzan.anims.play('jump_up', true);
-        if ((tarzan.body.velocity.y == 0) && (tarzan.body.velocity.x == 0))tarzan.anims.play('idle', true);
+        if (boy.x > 330) this.flipLeft(boy,200);
+        else if (boy.x < 30) this.flipRight(boy,200);
+        if (boy.body.velocity.y < 0) boy.anims.play('falling_down', true);
+        if (boy.body.velocity.y > 0) boy.anims.play('jump_up', true);
+        if ((boy.body.velocity.y == 0) && (boy.body.velocity.x == 0))boy.anims.play('idle', true);
     };
 
 
@@ -720,7 +720,7 @@ class Level1 extends Level{
         }, this);
     };
 
-    collideBanana(tarzan, banana){
+    collideBanana(boy, banana){
 	    var self = this;
         if(!banana.hasOverlapped){
             banana.hasOverlapped = true;
@@ -734,7 +734,7 @@ class Level1 extends Level{
 	            onComplete:function(){
                     if (volume == 1) coin.play();
         	        // Declare tarzan
-                    var point = self.physics.add.sprite(tarzan.x, tarzan.y-100, 'Point');
+                    var point = self.physics.add.sprite(boy.x, boy.y-100, 'Point');
                     point.setScale(0.25,0.25)﻿;
 		            banana.disableBody(true, true);
                     point.setVelocityY(-350);
@@ -784,11 +784,11 @@ class Level2 extends Level{
         this.createTime();
 
         // Declare Collision and OVerlaps
-        this.physics.add.collider(tarzan, pads, this.touchPad.bind(this));
-        this.physics.add.collider(tarzan, moving_pads, this.touchPad.bind(this));
-        this.physics.add.overlap(tarzan, objects, this.collideBanana.bind(this));
-        this.physics.add.overlap(tarzan, bonus, this.powerOverlap);
-        this.physics.add.collider(tarzan, birds, this.jumpOnBird.bind(this));
+        this.physics.add.collider(boy, pads, this.touchPad.bind(this));
+        this.physics.add.collider(boy, moving_pads, this.touchPad.bind(this));
+        this.physics.add.overlap(boy, objects, this.collideBanana.bind(this));
+        this.physics.add.overlap(boy, bonus, this.powerOverlap);
+        this.physics.add.collider(boy, birds, this.jumpOnBird.bind(this));
     };
 
     update(){
@@ -834,44 +834,44 @@ class Level2 extends Level{
     };
 
     updateTarzen(){
-        if ((cursors.up.isDown) && (tarzan.body.touching.down)) this.jumpPad(tarzan,current_pad);
+        if ((cursors.up.isDown) && (boy.body.touching.down)) this.jumpPad(boy,current_pad);
         
-        if ((tarzan.body.touching.down) && (current_pad.body.friction.x == 0.5)){
+        if ((boy.body.touching.down) && (current_pad.body.friction.x == 0.5)){
             this.gameOver();
         }
 
-        if (tarzan.body.touching.down){
-            if (current_pad.body.velocity.x > 0) tarzan.setAccelerationX(-2500);
-            else tarzan.setAccelerationX(2500);
+        if (boy.body.touching.down){
+            if (current_pad.body.velocity.x > 0) boy.setAccelerationX(-2500);
+            else boy.setAccelerationX(2500);
         }
-        else tarzan.setAccelerationX(0);
+        else boy.setAccelerationX(0);
 
-        if(tarzan.body.velocity.y > 750){
+        if(boy.body.velocity.y > 750){
             this.gameOver();
         }
 
         if (cursors.right.isDown){ 
-            this.flipRight(tarzan,100);
-            if (tarzan.body.touching.down){
-                tarzan.anims.play('walk', true);
+            this.flipRight(boy,100);
+            if (boy.body.touching.down){
+                boy.anims.play('walk', true);
             }
         }
 
         else if (cursors.left.isDown) {
-            this.flipLeft(tarzan,100);
-            if (tarzan.body.touching.down){
-                tarzan.anims.play('walk', true);
+            this.flipLeft(boy,100);
+            if (boy.body.touching.down){
+                boy.anims.play('walk', true);
             }
         }
 
-        else tarzan.setVelocityX(0);
+        else boy.setVelocityX(0);
 
-        if (tarzan.x > 330) this.flipLeft(tarzan,200);
-        else if (tarzan.x < 30) this.flipRight(tarzan,200);
+        if (boy.x > 330) this.flipLeft(boy,200);
+        else if (boy.x < 30) this.flipRight(boy,200);
 
-        if (tarzan.body.velocity.y < 0) tarzan.anims.play('falling_down', true);
-        if (tarzan.body.velocity.y > 0) tarzan.anims.play('jump_up', true);
-        if ((tarzan.body.velocity.y == 0) && (tarzan.body.velocity.x == 0))tarzan.anims.play('idle', true);
+        if (boy.body.velocity.y < 0) boy.anims.play('falling_down', true);
+        if (boy.body.velocity.y > 0) boy.anims.play('jump_up', true);
+        if ((boy.body.velocity.y == 0) && (boy.body.velocity.x == 0))boy.anims.play('idle', true);
     };
 
     updateMovingSnowPads(){
@@ -881,7 +881,7 @@ class Level2 extends Level{
         }, this);
     };
 
-    collideBanana(tarzan, banana){
+    collideBanana(boy, banana){
     var self = this;
         if(!banana.hasOverlapped){
             banana.hasOverlapped = true;
@@ -895,7 +895,7 @@ class Level2 extends Level{
                 onComplete:function(){
                     if (volume == 1) coin.play();
                     // Declare tarzan
-                    var point = self.physics.add.sprite(tarzan.x, tarzan.y-100, 'Point');
+                    var point = self.physics.add.sprite(boy.x, boy.y-100, 'Point');
                     point.setScale(0.25,0.25)﻿;
                     banana.disableBody(true, true);
                     point.setVelocityY(-350);
@@ -946,11 +946,11 @@ class Level3 extends Level{
         this.createTime();
 
         // Declare Collision and OVerlaps
-        this.physics.add.collider(tarzan, pads, this.touchPad.bind(this));
-        this.physics.add.collider(tarzan, moving_pads, this.touchPad.bind(this));
-        this.physics.add.overlap(tarzan, objects, this.collideBanana.bind(this));
-        this.physics.add.overlap(tarzan, bonus, this.powerOverlap);
-        this.physics.add.collider(tarzan, birds, this.jumpOnBird.bind(this));
+        this.physics.add.collider(boy, pads, this.touchPad.bind(this));
+        this.physics.add.collider(boy, moving_pads, this.touchPad.bind(this));
+        this.physics.add.overlap(boy, objects, this.collideBanana.bind(this));
+        this.physics.add.overlap(boy, bonus, this.powerOverlap);
+        this.physics.add.collider(boy, birds, this.jumpOnBird.bind(this));
     };
 
     update(){
@@ -996,40 +996,40 @@ class Level3 extends Level{
     };
 
     updateTarzen(){
-        if ((cursors.up.isDown) && (tarzan.body.touching.down)) this.jumpPad(tarzan,current_pad);
+        if ((cursors.up.isDown) && (boy.body.touching.down)) this.jumpPad(boy,current_pad);
         
-        if ((tarzan.body.touching.down) && (current_pad.body.friction.x == 0.5)){
+        if ((boy.body.touching.down) && (current_pad.body.friction.x == 0.5)){
             this.gameOver();
         }
 
-        else tarzan.setAccelerationX(0);
+        else boy.setAccelerationX(0);
 
-        if(tarzan.body.velocity.y > 750){
+        if(boy.body.velocity.y > 750){
             this.gameOver();
         }
 
         if (cursors.right.isDown){ 
-            this.flipRight(tarzan,100);
-            if (tarzan.body.touching.down){
-                tarzan.anims.play('walk', true);
+            this.flipRight(boy,100);
+            if (boy.body.touching.down){
+                boy.anims.play('walk', true);
             }
         }
 
         else if (cursors.left.isDown) {
-            this.flipLeft(tarzan,100);
-            if (tarzan.body.touching.down){
-                tarzan.anims.play('walk', true);
+            this.flipLeft(boy,100);
+            if (boy.body.touching.down){
+                boy.anims.play('walk', true);
             }
         }
 
-        else tarzan.setVelocityX(0);
+        else boy.setVelocityX(0);
 
-        if (tarzan.x > 330) this.flipLeft(tarzan,200);
-        else if (tarzan.x < 30) this.flipRight(tarzan,200);
+        if (boy.x > 330) this.flipLeft(boy,200);
+        else if (boy.x < 30) this.flipRight(boy,200);
 
-        if (tarzan.body.velocity.y < 0) tarzan.anims.play('falling_down', true);
-        if (tarzan.body.velocity.y > 0) tarzan.anims.play('jump_up', true);
-        if ((tarzan.body.velocity.y == 0) && (tarzan.body.velocity.x == 0))tarzan.anims.play('idle', true);
+        if (boy.body.velocity.y < 0) boy.anims.play('falling_down', true);
+        if (boy.body.velocity.y > 0) boy.anims.play('jump_up', true);
+        if ((boy.body.velocity.y == 0) && (boy.body.velocity.x == 0))boy.anims.play('idle', true);
     };
 
     updateMovingSnowPads(){
@@ -1041,7 +1041,7 @@ class Level3 extends Level{
 
     touchPad(tarzen,pad){
         current_pad = pad;
-        if ((tarzan.body.touching.down) && (pad.body.touching.up)){
+        if ((boy.body.touching.down) && (pad.body.touching.up)){
             this.tweens
             .add({
                 targets: pad,
@@ -1054,7 +1054,7 @@ class Level3 extends Level{
         }
     };
 
-    collideBanana(tarzan, banana){
+    collideBanana(boy, banana){
     var self = this;
         if(!banana.hasOverlapped){
             banana.hasOverlapped = true;
@@ -1068,7 +1068,7 @@ class Level3 extends Level{
                 onComplete:function(){
                     if (volume == 1) coin.play();
                     // Declare tarzan
-                    var point = self.physics.add.sprite(tarzan.x, tarzan.y-100, 'Point');
+                    var point = self.physics.add.sprite(boy.x, boy.y-100, 'Point');
                     point.setScale(0.25,0.25)﻿;
                     banana.disableBody(true, true);
                     point.setVelocityY(-350);
