@@ -53,10 +53,10 @@
             float:left;
             background:white;
             padding-top:25px;
-            padding-bottom:25px;
-            padding-left:50px;
-            padding-right:50px;
-            margin:10px 125px;
+            padding-bottom:0px;
+            padding-left:0px;
+            padding-right:0px;
+            margin:10px calc(50% - 500px);
             
         }
         .footer {
@@ -124,6 +124,8 @@
                         var time_sprite;
                         var game_over;
                         var scores = [0,0,0,0];
+                        var blackBg;
+
                         class Menu extends Phaser.Scene{
                             createStartButton(x,y){
                                 var Button = this.add.image(x, y, 'Button').setScale(0.1);
@@ -437,12 +439,12 @@
                             };
 
                             createTime(){
-                                time_sprite = this.add.sprite(285, 25, 'Time');
+                                time_sprite = this.add.sprite(285, 35, 'Time');
                                 time_sprite.setScale(0.15,0.15)﻿;
                                 time_sprite.setScrollFactor(0);
-                                time_text = this.add.text(305, 18, time, {
-                                    fontSize:18, 
-                                    fill : 'black', 
+                                time_text = this.add.text(307, 28, time, {
+                                    fontSize:20, 
+                                    fill : 'white', 
                                     fontWeight:'bold'
                                 });
                                 time_text.setScrollFactor(0);
@@ -455,11 +457,18 @@
                             };
 
                             createCompleteBar(){
-                                var scrollbar = this.add.image(190, 25, 'ScrollBar').setScale(0.15);
+                                var scrollbar = this.add.image(190, 35, 'ScrollBar').setScale(0.15);
                                 scrollbar.setScrollFactor(0);
-                                mini_tarzen = this.add.sprite(130, 25, 'Walk_001');
+                                mini_tarzen = this.add.sprite(130, 35, 'Walk_001');
                                 mini_tarzen.setScrollFactor(0);
                                 mini_tarzen.setScale(0.050,0.050)﻿;
+                            };
+
+                            createBlackBg(){
+                                    blackBg = this.add.rectangle(180, 35, 360, 70, 0x333333);
+                                    blackBg.setScrollFactor(0);
+                                    blackBg = this.add.rectangle(180, 70, 360, 5, 0x000000);
+                                    blackBg.setScrollFactor(0);
                             };
 
                             createVolume(x,y,scale){
@@ -659,9 +668,9 @@
 
                             createSc(name){
                                 //  The score
-                                var banana = this.add.image(25, 25, name).setScale(0.1);
+                                var banana = this.add.image(25, 35, name).setScale(0.1);
                                 banana.setScrollFactor(0);
-                                scoreText = this.add.bitmapText(50, 10, 'myfont', score,24 ); 
+                                scoreText = this.add.bitmapText(50, 20, 'myfont', score,24 ); 
                                 scoreText.setScrollFactor(0);
                             };
 
@@ -723,6 +732,7 @@
                                 this.createBirds();
                                 this.createBonuses();
                                 this.createTarzen();
+                                this.createBlackBg();
                                 this.createScore();
                                 this.createCamera();
                                 this.createVolume(320,570,0.05);
@@ -854,6 +864,7 @@
                                 this.createBirds();
                                 this.createBonuses();
                                 this.createTarzen();
+                                this.createBlackBg();
                                 this.createScore();
                                 this.createCamera();
                                 this.createVolume(320,570,0.05);
@@ -1002,6 +1013,7 @@
                                 this.createBirds();
                                 this.createBonuses();
                                 this.createTarzen();
+                                this.createBlackBg();
                                 this.createScore();
                                 this.createCamera();
                                 this.createVolume(320,570,0.05);
@@ -1092,7 +1104,7 @@
                                     .add({
                                         targets: pad,
                                         alpha: 1,
-                                        duration: 750,
+                                        duration: 2000,
                                         ease: 'Power2',
                                         onComplete: function(){
                                             pad.setAccelerationY(500);
@@ -1163,7 +1175,7 @@
             </div>
         </div>
         <div class = "advertisement">        
-            <h3>More Games</h3>
+            <h3 style = "margin-left:35%;">More Games</h3>
             <ul>
                 <li class="game-link">
                     <div class="image">
