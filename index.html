@@ -1,4 +1,4 @@
-﻿<!doctype html> 
+<!doctype html> 
 <html lang="en"> 
 <head> 
     <meta charset="UTF-8" />
@@ -51,6 +51,7 @@
             display:block;
             float:left;
             background:white;
+            margin:50px 0px;
         }
         .container{
             width: 1000px;
@@ -64,7 +65,7 @@
             left: 0;
             bottom: 0;
             width: 100%;
-            background-color: rgb(200,200,200);
+            background-color: #b2ebf2;
             color: black;
             text-align: center;
             padding: 50px 0px;
@@ -692,15 +693,19 @@
 
                             updateBirds(){
                                 birds.children.each(function(bird) {  
-                                    if (bird.x > 330) this.flipLeft(bird, 50);
-                                    else if (bird.x < 30) this.flipRight(bird,50);
+                                    if (bird.x > 330){
+                                        this.flipLeft(bird, 50);
+                                    }
+                                    else if (bird.x < 30){ 
+                                        this.flipRight(bird,50);
+                                    }
                                 }, this);
                             };
 
                             updateMovingPads(){
                                 moving_pads.children.each(function(moving_pad) {  
-                                    if (moving_pad.x > 300) this.flipLeft(moving_pad, 50);
-                                    else if (moving_pad.x < 50) this.flipRight(moving_pad,50);
+                                    if (moving_pad.x > 300) moving_pad.setVelocityX(-50);
+                                    else if (moving_pad.x < 50) moving_pad.setVelocityX(50);
                                 }, this);
                             };
 
@@ -1179,11 +1184,6 @@
                     <li> Level 3: Lava Theme</li>
                 </ul>
             </div>
-                                <div class="footer">
-            <p>Assets by <a href="https://craftpix.net/">https://craftpix.net/</a> and <a href="https://opengameart.org/">https://opengameart.org/</a>
-            </p>
-            <p>Copyrights All Rights Reserved</p>
-                </div>
         </div>
         <div class = "advertisement">        
             <h3 style = "margin-left:35%;">More Games</h3>
@@ -1232,6 +1232,11 @@
                 </li>
             </ul>
         </div>
+    </div>
+    <div class="footer">
+        <p>Assets by <a href="https://craftpix.net/">https://craftpix.net/</a> and <a href="https://opengameart.org/">  https://opengameart.org/</a>
+        </p>
+        <p>Copyrights All Rights Reserved</p>
     </div>
 </body>
 </html>      
