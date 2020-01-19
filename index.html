@@ -139,12 +139,16 @@
                             createStartButton(x,y){
                                 var Button = this.add.image(x, y, 'Button').setScale(0.1);
                                 var self = this;
-                            Button
-                                .setInteractive({useHandCursor: true})
-                                .on('pointerover', () => {Button.setTexture('Button_hover').setScale(0.1);})
-                                .on('pointerout', () => {Button.setTexture('Button').setScale(0.1)})
-                                .on('pointerdown', () => { Button.setTexture('Button_down').setScale(0.1)})
-                                .on('pointerup', () => {
+                            	Button
+                                .setInteractive({
+                              		useHandCursor: true
+                            	}).on('pointerover', () => {
+                              		Button.setTexture('Button_hover').setScale(0.1);
+                            	}).on('pointerout', () => {
+                              		Button.setTexture('Button').setScale(0.1)
+                            	}).on('pointerdown', () => {
+                              		Button.setTexture('Button_down').setScale(0.1);
+                            	}).on('pointerup', () => {
                                     this.scene.bringToTop('Level1');
                                     this.scene.start('Level1');
                                 });
@@ -1247,4 +1251,4 @@
         <p>Copyrights All Rights Reserved</p>
     </div>
 </body>
-</html>      
+</html>
