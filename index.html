@@ -105,10 +105,9 @@
 
 <body style="margin:auto auto;">
     <div class = "container">
-        <div class="header">
-            <h2 style="text-align:center"  >Introducing</h2>
-            <img style="text-align:center;width:50px;margin: 0px calc(50% - 25px);" src="assets/Jumping_boy_sprites_v102/Transparent PNG/Idle/frame-1.png" style="width:100px;">
-            <img style="text-align:center;width:200px;margin: 0px calc(50% - 100px);" src="assets/coollogo_com-3156672.png" style="width:100px;">
+        <div class="header " style="display:block;float:center;margin:auto;width:100%;">
+            <img style="text-align:center;display:inline-block;width:50px;" src="assets/Jumping_boy_sprites_v102/Transparent PNG/Idle/frame-1.png" style="width:100px;">
+            <img style="text-align:center;width:200px;margin: 0px;display:inline-block;" src="assets/coollogo_com-3156672.png" style="width:100px;">
         </div>
         <div class="game card">
             <div style="width:100%;float:left;padding:10px 40px; box-sizing:border-box;display:block;"> 
@@ -567,7 +566,7 @@
 
                                 // Declare tarzan
                                 boy = this.physics.add.sprite(180, 450, 'Walk_001');
-                                boy.setScale(0.075,0.075)﻿;
+                                boy.setScale(0.305,0.305);
                                 boy.setVelocityY(-750);
                                 boy.body.friction.x = 1;
                             };
@@ -596,7 +595,7 @@
                                 for (var i = 0; i < path.length; i=i+1)
                                 {
                                 if((i+2)%20 == 0) {
-                                var bird = birds.create(path[i].x,path[i].y+100, 'Bird_0').setScale(0.05);
+                                var bird = birds.create(path[i].x,path[i].y+100, 'Bird_0').setScale(0.2);
                                 bird.anims.play('bird_flying', true);
                                 bird.setVelocityX(50);
                                     }
